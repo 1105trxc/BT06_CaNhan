@@ -111,21 +111,3 @@ Bạn cần khởi chạy đồng thời cả Backend Server và Frontend Client
 2.  Vite Client sẽ khởi chạy và cung cấp liên kết truy cập cục bộ (thường là `http://localhost:5173` hoặc `http://localhost:5174`). Mở trình duyệt và truy cập để trải nghiệm sản phẩm.
 
 ---
-
-## 🧪 TRẢI NGHIỆM CÁC TÍNH NĂNG CHÍNH
-
-### 1. Đăng nhập / Đăng ký & Nhận OTP qua email
-*   Hệ thống hỗ trợ gửi mã xác thực đăng ký hoặc đặt lại mật khẩu qua email thật đã cấu hình ở bước `.env`.
-*   Hoặc sử dụng tài khoản kiểm thử mặc định đã tạo trong lúc chạy Seed Data.
-
-### 2. Xem sản phẩm và Mua sắm
-*   Khám phá các thương hiệu máy ảnh đẳng cấp với giao diện chữ nhật ngang bo góc mềm mại, cao cấp.
-*   Trang danh mục và chi tiết sản phẩm được thiết kế với chuẩn tiền tệ VND và các hình ảnh camera sắc nét từ bộ sản phẩm của hãng.
-
-### 3. Theo dõi & Hủy đơn hàng (Theo yêu cầu số 3)
-*   Thực hiện mua sản phẩm và thanh toán bằng phương thức COD.
-*   Truy cập **Lịch sử mua hàng** (`/orders`) hoặc **Chi tiết đơn hàng** (`/orders/:id`) để xem Timeline trạng thái động.
-*   **Trải nghiệm quy luật thời gian thực:**
-    1.  *Trong vòng 30 phút đầu sau khi đặt đơn:* Bạn có thể bấm nút **Hủy đơn** ở trạng thái `Đang chờ` (pending) hoặc `Đã xác nhận` (confirmed) để hủy trực tiếp.
-    2.  *Nếu quá 30 phút:* Backend sẽ tự động kích hoạt chế độ **Auto-Confirm** chuyển sang trạng thái `Đã xác nhận` (khi bạn xem trang đơn hàng), lúc này bạn không thể tự ý hủy đơn trực tiếp nữa (hệ thống sẽ hiển thị lỗi cảnh báo đỏ).
-    3.  *Trường hợp shop đang chuẩn bị hàng (Step 3: preparing):* Nút bấm sẽ tự chuyển thành **"Gửi yêu cầu hủy"**. Bấm vào nút này sẽ gửi yêu cầu duyệt hủy lên shop (`cancel_requested`) thay vì hủy lập tức.
