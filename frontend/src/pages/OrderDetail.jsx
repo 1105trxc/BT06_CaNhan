@@ -4,16 +4,17 @@ import { Link, useParams, useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import { getOrderDetails, cancelOrder } from '../redux/orderSlice';
 import { Package, Truck, CheckCircle, Clock, XCircle, ChevronLeft, MapPin, Search, CreditCard, ChevronRight } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 const STATUS_LABEL_MAP = {
-  pending: 'Order Placed',
-  confirmed: 'Confirmed',
-  preparing: 'Processing',
-  shipping: 'Shipping',
-  completed: 'Completed',
-  cancelled: 'Cancelled',
-  cancel_requested: 'Cancellation Requested',
-  refunded: 'Refunded'
+  pending: 'Đã đặt hàng',
+  confirmed: 'Đã xác nhận',
+  preparing: 'Đang chuẩn bị',
+  shipping: 'Đang giao hàng',
+  completed: 'Đã hoàn thành',
+  cancelled: 'Đã hủy',
+  cancel_requested: 'Yêu cầu hủy',
+  refunded: 'Đã hoàn tiền'
 };
 
 const CANCELLED_STATUSES = ['cancelled', 'cancel_requested', 'refunded'];
@@ -21,7 +22,7 @@ const CANCELLED_STATUSES = ['cancelled', 'cancel_requested', 'refunded'];
 const formatDateTime = (dateStr) => {
   if (!dateStr) return '';
   const d = new Date(dateStr);
-  return d.toLocaleString('en-US', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+  return d.toLocaleString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 };
 
 const getStepTime = (history, statusKey) => {
@@ -34,11 +35,11 @@ const StatusTimeline = ({ status, history }) => {
   const isCancelled = CANCELLED_STATUSES.includes(status);
   
   const NORMAL_STEPS = [
-    { key: 'pending', label: 'Order Placed', icon: <Package size={18} /> },
-    { key: 'confirmed', label: 'Confirmed', icon: <CheckCircle size={18} /> },
-    { key: 'preparing', label: 'Processing', icon: <Clock size={18} /> },
-    { key: 'shipping', label: 'Shipping', icon: <Truck size={18} /> },
-    { key: 'completed', label: 'Completed', icon: <CheckCircle size={18} /> }
+    { key: 'pending', label: 'Đã đặt hàng', icon: <Package size={18} /> },
+    { key: 'confirmed', label: 'Đã xác nhận', icon: <CheckCircle size={18} /> },
+    { key: 'preparing', label: 'Đang chuẩn bị', icon: <Clock size={18} /> },
+    { key: 'shipping', label: 'Đang giao hàng', icon: <Truck size={18} /> },
+    { key: 'completed', label: 'Đã hoàn thành', icon: <CheckCircle size={18} /> }
   ];
 
   const currentIdx = NORMAL_STEPS.findIndex(s => s.key === status);
@@ -160,8 +161,15 @@ const OrderDetail = () => {
   }, [dispatch, id, user]);
 
   const handleCancel = () => {
-    if (window.confirm('Are you sure you want to cancel this order?')) {
-      dispatch(cancelOrder({ orderId: id, reason: 'Customer requested cancellation' }));
+    if (window.confirm('Bạn có chắc chắn muốn hủy đơn hàng này không?')) {
+      dispatch(cancelOrder({ orderId: id, reason: 'Khách hàng yêu cầu hủy đơn hàng' }))
+        .unwrap()
+        .then((res) => {
+          toast.success(res.message || 'Cập nhật trạng thái hủy đơn thành công');
+        })
+        .catch((err) => {
+          toast.error(err || 'Không thể hủy đơn hàng');
+        });
     }
   };
 
@@ -171,9 +179,9 @@ const OrderDetail = () => {
         <div style={{ background: 'var(--bg)', minHeight: '100vh', display: 'flex', alignItems: 'center' }}>
           <div className="container-xl">
             <div className="card-glass p-5 text-center max-w-md mx-auto">
-              <h4 className="fw-bold mb-2">Login Required</h4>
-              <p style={{ color: 'var(--text-muted)' }} className="mb-4">Please log in to view your order details.</p>
-              <Link to="/login" className="btn-purple px-4 py-2">Log In</Link>
+              <h4 className="fw-bold mb-2">Yêu cầu Đăng nhập</h4>
+              <p style={{ color: 'var(--text-muted)' }} className="mb-4">Vui lòng đăng nhập để xem chi tiết đơn hàng của bạn.</p>
+              <Link to="/login" className="btn-purple px-4 py-2">Đăng nhập</Link>
             </div>
           </div>
         </div>
@@ -187,7 +195,7 @@ const OrderDetail = () => {
         <div style={{ background: 'var(--bg)', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <div className="text-center">
             <div className="spinner-border mb-3" role="status"></div>
-            <p style={{ color: 'var(--text-muted)' }}>Loading order details...</p>
+            <p style={{ color: 'var(--text-muted)' }}>Đang tải thông tin đơn hàng...</p>
           </div>
         </div>
       </Layout>
@@ -204,10 +212,10 @@ const OrderDetail = () => {
         <div className="position-relative py-4 mb-4" style={{ background: 'var(--surface)' }}>
           <div className="container-xl px-4 d-flex justify-content-between align-items-center">
             <button className="btn-outline-purple m-0 border-0 px-2 py-1" style={{ background: 'transparent' }} onClick={() => navigate('/orders')}>
-              <ChevronLeft size={18} /> Back to Orders
+              <ChevronLeft size={18} /> Quay lại Đơn hàng
             </button>
             <div className="d-flex align-items-center gap-3">
-              <span style={{ color: 'var(--text-muted)', fontSize: '13px' }}>ORDER #<span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{selectedOrder.order_code}</span></span>
+              <span style={{ color: 'var(--text-muted)', fontSize: '13px' }}>ĐƠN HÀNG #<span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{selectedOrder.order_code}</span></span>
               <span className="badge" style={{ 
                 background: CANCELLED_STATUSES.includes(selectedOrder.status) ? 'rgba(239,68,68,0.1)' : 'var(--primary-subtle)',
                 color: CANCELLED_STATUSES.includes(selectedOrder.status) ? '#FCA5A5' : 'var(--primary-light)',
@@ -226,10 +234,10 @@ const OrderDetail = () => {
           <div className="card-dark p-4 mb-4 animate-fade-up">
             <StatusTimeline status={selectedOrder.status} history={selectedOrder.history} />
             <div className="d-flex justify-content-end gap-3 mt-4 pt-4" style={{ borderTop: '1px solid var(--border)' }}>
-              <button className="btn-outline-purple" onClick={() => navigate('/search')}>Continue Shopping</button>
+              <button className="btn-outline-purple" onClick={() => navigate('/search')}>Tiếp tục mua sắm</button>
               {isCancellable && (
                 <button className="btn-outline-purple" style={{ color: '#FCA5A5', borderColor: 'rgba(239,68,68,0.5)' }} onClick={handleCancel}>
-                  Cancel Order
+                  Hủy đơn hàng
                 </button>
               )}
             </div>
@@ -244,25 +252,25 @@ const OrderDetail = () => {
               <div className="card-glass p-4">
                 <div className="d-flex align-items-center gap-2 mb-4">
                   <MapPin size={20} color="var(--primary-light)" />
-                  <h5 className="fw-bold m-0">Shipping Information</h5>
+                  <h5 className="fw-bold m-0">Thông tin giao hàng</h5>
                 </div>
                 <div className="p-3 rounded-3" style={{ background: 'var(--surface-2)', border: '1px solid var(--border)' }}>
                   <div className="row g-3">
                     <div className="col-sm-6">
-                      <p className="mb-1" style={{ fontSize: '12px', color: 'var(--text-faint)' }}>Recipient</p>
+                      <p className="mb-1" style={{ fontSize: '12px', color: 'var(--text-faint)' }}>Người nhận</p>
                       <p className="fw-medium m-0" style={{ color: 'var(--text-primary)' }}>{selectedOrder.shipping_address?.full_name}</p>
                     </div>
                     <div className="col-sm-6">
-                      <p className="mb-1" style={{ fontSize: '12px', color: 'var(--text-faint)' }}>Phone</p>
+                      <p className="mb-1" style={{ fontSize: '12px', color: 'var(--text-faint)' }}>Số điện thoại</p>
                       <p className="fw-medium m-0" style={{ color: 'var(--text-primary)' }}>{selectedOrder.shipping_address?.phone}</p>
                     </div>
                     <div className="col-12">
-                      <p className="mb-1" style={{ fontSize: '12px', color: 'var(--text-faint)' }}>Address</p>
+                      <p className="mb-1" style={{ fontSize: '12px', color: 'var(--text-faint)' }}>Địa chỉ</p>
                       <p className="fw-medium m-0" style={{ color: 'var(--text-primary)' }}>{selectedOrder.shipping_address?.address}</p>
                     </div>
                     {selectedOrder.shipping_address?.note && (
                       <div className="col-12">
-                        <p className="mb-1" style={{ fontSize: '12px', color: 'var(--text-faint)' }}>Note</p>
+                        <p className="mb-1" style={{ fontSize: '12px', color: 'var(--text-faint)' }}>Ghi chú</p>
                         <p className="fst-italic m-0" style={{ color: 'var(--text-secondary)' }}>{selectedOrder.shipping_address?.note}</p>
                       </div>
                     )}
@@ -275,7 +283,7 @@ const OrderDetail = () => {
                 <div className="card-glass p-4">
                   <div className="d-flex align-items-center gap-2 mb-4">
                     <Search size={20} color="var(--primary-light)" />
-                    <h5 className="fw-bold m-0">Tracking History</h5>
+                    <h5 className="fw-bold m-0">Lịch sử hành trình</h5>
                   </div>
                   <div className="p-4 rounded-3" style={{ background: 'var(--surface-2)', border: '1px solid var(--border)' }}>
                     <TrackingLog history={selectedOrder.history} />
@@ -292,7 +300,7 @@ const OrderDetail = () => {
                 <div className="d-flex align-items-center justify-content-between mb-4">
                   <div className="d-flex align-items-center gap-2">
                     <Package size={20} color="var(--primary-light)" />
-                    <h5 className="fw-bold m-0">Items ({selectedOrder.items?.length})</h5>
+                    <h5 className="fw-bold m-0">Danh sách sản phẩm ({selectedOrder.items?.length})</h5>
                   </div>
                 </div>
                 
@@ -307,11 +315,11 @@ const OrderDetail = () => {
                       />
                       <div className="flex-grow-1" style={{ minWidth: 0 }}>
                         <div className="fw-medium text-truncate mb-1" style={{ fontSize: '14px' }}>{item.product?.name}</div>
-                        <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Qty: {item.quantity} &times; ${item.price_at_buy?.toFixed(2)}</div>
+                        <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>SL: {item.quantity} &times; {item.price_at_buy?.toLocaleString('vi-VN')} đ</div>
                       </div>
                       <div className="text-end pe-2">
                         <div className="fw-bold" style={{ fontSize: '15px', color: 'var(--primary-light)' }}>
-                          ${(item.price_at_buy * item.quantity)?.toFixed(2)}
+                          {(item.price_at_buy * item.quantity)?.toLocaleString('vi-VN')} đ
                         </div>
                       </div>
                     </div>
@@ -323,22 +331,22 @@ const OrderDetail = () => {
               <div className="card-glass p-4">
                 <div className="d-flex align-items-center gap-2 mb-4">
                   <CreditCard size={20} color="var(--primary-light)" />
-                  <h5 className="fw-bold m-0">Payment Summary</h5>
+                  <h5 className="fw-bold m-0">Tóm tắt thanh toán</h5>
                 </div>
                 
                 <div className="d-flex flex-column gap-3 mb-4">
                   <div className="d-flex justify-content-between">
-                    <span style={{ color: 'var(--text-muted)' }}>Subtotal</span>
-                    <span className="fw-medium">${selectedOrder.total_base?.toFixed(2)}</span>
+                    <span style={{ color: 'var(--text-muted)' }}>Tạm tính</span>
+                    <span className="fw-medium">{selectedOrder.total_base?.toLocaleString('vi-VN')} đ</span>
                   </div>
                   <div className="d-flex justify-content-between">
-                    <span style={{ color: 'var(--text-muted)' }}>Shipping Fee</span>
-                    <span className="fw-medium">{selectedOrder.shipping_fee > 0 ? `$${selectedOrder.shipping_fee.toFixed(2)}` : 'Free'}</span>
+                    <span style={{ color: 'var(--text-muted)' }}>Phí vận chuyển</span>
+                    <span className="fw-medium">{selectedOrder.shipping_fee > 0 ? `${selectedOrder.shipping_fee.toLocaleString('vi-VN')} đ` : 'Miễn phí'}</span>
                   </div>
                   {selectedOrder.discount_total > 0 && (
                     <div className="d-flex justify-content-between">
-                      <span style={{ color: 'var(--text-muted)' }}>Discount</span>
-                      <span style={{ color: 'var(--accent)' }}>-${selectedOrder.discount_total?.toFixed(2)}</span>
+                      <span style={{ color: 'var(--text-muted)' }}>Giảm giá</span>
+                      <span style={{ color: 'var(--accent)' }}>-{selectedOrder.discount_total?.toLocaleString('vi-VN')} đ</span>
                     </div>
                   )}
                 </div>
@@ -346,14 +354,14 @@ const OrderDetail = () => {
                 <div className="divider-purple mb-4"></div>
                 
                 <div className="d-flex justify-content-between align-items-center mb-4">
-                  <span className="fw-bold" style={{ fontSize: '16px' }}>Total Paid</span>
-                  <span className="fw-bold" style={{ fontSize: '24px', color: 'var(--primary-light)' }}>${selectedOrder.total_final?.toFixed(2)}</span>
+                  <span className="fw-bold" style={{ fontSize: '16px' }}>Tổng thanh toán</span>
+                  <span className="fw-bold" style={{ fontSize: '24px', color: 'var(--primary-light)' }}>{selectedOrder.total_final?.toLocaleString('vi-VN')} đ</span>
                 </div>
 
                 <div className="p-3 rounded-3 d-flex justify-content-between align-items-center" style={{ background: 'var(--surface-2)', border: '1px solid var(--border)' }}>
-                  <span style={{ color: 'var(--text-muted)', fontSize: '13px' }}>Method</span>
+                  <span style={{ color: 'var(--text-muted)', fontSize: '13px' }}>Phương thức</span>
                   <span className="fw-bold" style={{ color: 'var(--text-primary)', fontSize: '14px' }}>
-                    {selectedOrder.payment_method?.toUpperCase() === 'COD' ? 'Cash on Delivery' : selectedOrder.payment_method}
+                    {selectedOrder.payment_method?.toUpperCase() === 'COD' ? 'Thanh toán khi nhận hàng (COD)' : selectedOrder.payment_method}
                   </span>
                 </div>
               </div>

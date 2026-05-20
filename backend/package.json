@@ -6,10 +6,7 @@
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
-    "seed": "node scripts/seed.js && node scripts/seed_from_cloudinary.js && node scripts/seed_orders.js",
-    "seed:base": "node scripts/seed.js",
-    "seed:cloud": "node scripts/seed_from_cloudinary.js",
-    "seed:orders": "node scripts/seed_orders.js",
+    "seed": "node scripts/seed.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

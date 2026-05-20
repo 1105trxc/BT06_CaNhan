@@ -340,13 +340,15 @@ input:-webkit-autofill:active {
 
 .product-card-img-wrap {
   overflow: hidden;
-  background: var(--surface-2);
+  background: #ffffff;
 }
 
 .product-card-img-wrap img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  padding: 4px;
+  background-color: #ffffff;
   transition: transform 0.5s var(--ease);
 }
 

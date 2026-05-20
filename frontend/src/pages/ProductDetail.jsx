@@ -66,7 +66,7 @@ const ProductDetail = () => {
 
   const images = product.media?.length > 0 ? product.media : [PLACEHOLDER_IMAGE];
   const discountPct = 23;
-  const oldPrice = (product.base_price * (100 / (100 - discountPct))).toFixed(2);
+  const oldPrice = Math.round(product.base_price * (100 / (100 - discountPct)));
   const totalStock = product.variants?.reduce((acc, v) => acc + (v.stock_quantity || 0), 0) || 100;
   const displaySimilar = similarProducts?.length > 0
     ? similarProducts.slice(0, 4)
@@ -114,7 +114,7 @@ const ProductDetail = () => {
             {/* Left: Image Gallery */}
             <div className="col-lg-6">
               {/* Main Swiper */}
-              <div className="rounded-3 overflow-hidden mb-3" style={{ backgroundColor: 'var(--surface)' }}>
+              <div className="rounded-3 overflow-hidden mb-3 border" style={{ backgroundColor: '#ffffff' }}>
                 <Swiper
                   loop={images.length > 1}
                   navigation={true}
@@ -125,7 +125,7 @@ const ProductDetail = () => {
                 >
                   {images.map((img, i) => (
                     <SwiperSlide key={i}>
-                      <img src={img.media_url} className="w-100" style={{ height: '520px', objectFit: 'cover' }} alt={`${product.name} ${i + 1}`} />
+                      <img src={img.media_url} className="w-100" style={{ height: '520px', objectFit: 'contain', padding: '8px' }} alt={`${product.name} ${i + 1}`} />
                     </SwiperSlide>
                   ))}
                 </Swiper>
@@ -144,14 +144,14 @@ const ProductDetail = () => {
                 >
                   {images.map((img, i) => (
                     <SwiperSlide key={i} style={{ cursor: 'pointer', opacity: 0.6 }}>
-                      <div className="rounded-2 overflow-hidden border-2" style={{ aspectRatio: '1/1', backgroundColor: '#f5f5f5' }}>
-                        <img src={img.media_url} className="w-100 h-100" style={{ objectFit: 'cover' }} alt={`thumb-${i}`} />
+                      <div className="rounded-2 overflow-hidden border" style={{ aspectRatio: '1/1', backgroundColor: '#ffffff' }}>
+                        <img src={img.media_url} className="w-100 h-100" style={{ objectFit: 'contain', padding: '2px' }} alt={`thumb-${i}`} />
                       </div>
                     </SwiperSlide>
                   ))}
                 </Swiper>
               )}
-              <style>{`.swiper-slide-thumb-active { opacity: 1 !important; } .swiper-slide-thumb-active div { border: 2px solid #111 !important; }`}</style>
+              <style>{`.swiper-slide-thumb-active { opacity: 1 !important; } .swiper-slide-thumb-active div { border: 2px solid var(--primary) !important; }`}</style>
             </div>
 
             {/* Right: Product Info */}
@@ -168,7 +168,7 @@ const ProductDetail = () => {
               </div>
 
               {/* Name */}
-              <h1 className="fw-bold text-dark mb-2" style={{ fontSize: 'clamp(22px, 3vw, 30px)', fontFamily: 'Georgia, serif', lineHeight: '1.25' }}>
+              <h1 className="fw-bold text-dark mb-2" style={{ fontSize: 'clamp(22px, 3vw, 30px)', fontFamily: 'var(--font-heading)', lineHeight: '1.25' }}>
                 {product.name}
               </h1>
 
@@ -180,8 +180,8 @@ const ProductDetail = () => {
 
               {/* Price */}
               <div className="d-flex align-items-baseline gap-3 mb-1">
-                <span className="fw-bold text-dark" style={{ fontSize: '28px' }}>${product.base_price?.toFixed(2)}</span>
-                <span className="text-muted text-decoration-line-through" style={{ fontSize: '18px' }}>${oldPrice}</span>
+                <span className="fw-bold text-dark" style={{ fontSize: '28px' }}>{product.base_price?.toLocaleString('vi-VN')} đ</span>
+                <span className="text-muted text-decoration-line-through" style={{ fontSize: '18px' }}>{oldPrice?.toLocaleString('vi-VN')} đ</span>
                 <span className="badge text-white fw-bold px-2 py-1 rounded-1" style={{ fontSize: '11px', backgroundColor: '#e11d48' }}>
                   {discountPct}% OFF
                 </span>
@@ -208,7 +208,7 @@ const ProductDetail = () => {
                     </button>
                   </div>
                   <span className="text-success d-flex align-items-center gap-1" style={{ fontSize: '13px' }}>
-                    <CheckCircle size={15} /> {totalStock > 0 ? `${totalStock} in stock` : 'Out of stock'}
+                    <CheckCircle size={15} /> {totalStock > 0 ? `Còn ${totalStock} sản phẩm` : 'Hết hàng'}
                   </span>
                 </div>
               </div>
@@ -218,26 +218,26 @@ const ProductDetail = () => {
                 <button className="btn btn-purple flex-grow-1 py-3 rounded-2 d-flex align-items-center justify-content-center gap-2"
                   style={{ fontSize: '14px' }}
                   onClick={handleAddToCart}>
-                  <ShoppingCart size={17} /> Add to Cart
+                  <ShoppingCart size={17} /> Thêm vào giỏ hàng
                 </button>
                 <button
                   className={`btn border rounded-2 px-3 ${wishlist ? 'btn-danger' : 'btn-outline-secondary'}`}
                   onClick={() => setWishlist(!wishlist)}
-                  title="Wishlist"
+                  title="Yêu thích"
                 >
                   <Heart size={18} fill={wishlist ? '#fff' : 'none'} />
                 </button>
               </div>
               <button className="btn btn-outline-purple w-100 py-3 rounded-2 fw-bold" style={{ fontSize: '14px' }} onClick={handleBuyNow}>
-                Buy It Now
+                Mua ngay
               </button>
 
               {/* Trust Badges */}
               <div className="row g-2 mt-4">
                 {[
-                  { icon: <Truck size={16} />, title: 'Free Shipping', sub: 'Orders over $100' },
-                  { icon: <RotateCcw size={16} />, title: '30-Day Returns', sub: 'Easy returns' },
-                  { icon: <ShieldCheck size={16} />, title: 'Authenticity', sub: '100% verified' },
+                  { icon: <Truck size={16} />, title: 'Miễn phí ship', sub: 'Đơn từ 10tr' },
+                  { icon: <RotateCcw size={16} />, title: 'Đổi trả 30 ngày', sub: 'Thủ tục nhanh gọn' },
+                  { icon: <ShieldCheck size={16} />, title: 'Chính hãng', sub: 'Cam kết 100%' },
                 ].map((f, i) => (
                   <div key={i} className="col-4">
                     <div className="border rounded-2 p-2 text-center" style={{ backgroundColor: '#fafafa' }}>
@@ -256,9 +256,9 @@ const ProductDetail = () => {
           <div className="mb-5">
             <div className="d-flex gap-0 border-bottom mb-4">
               {[
-                { key: 'description', label: 'Description' },
-                { key: 'reviews', label: `Reviews (${product.sold_quantity || 128})` },
-                { key: 'shipping', label: 'Shipping & Returns' },
+                { key: 'description', label: 'Mô tả' },
+                { key: 'reviews', label: `Đánh giá (${product.sold_quantity || 128})` },
+                { key: 'shipping', label: 'Giao hàng & Đổi trả' },
               ].map(tab => (
                 <button
                   key={tab.key}
@@ -284,7 +284,7 @@ const ProductDetail = () => {
                     <div className="text-center">
                       <p className="fw-bold mb-0" style={{ fontSize: '48px', lineHeight: 1 }}>{product.average_rating || 4.8}</p>
                       <StarRow rating={product.average_rating || 4.8} />
-                      <p className="text-muted mb-0 mt-1" style={{ fontSize: '12px' }}>{product.sold_quantity || 842} reviews</p>
+                      <p className="text-muted mb-0 mt-1" style={{ fontSize: '12px' }}>{product.sold_quantity || 842} đánh giá</p>
                     </div>
                     <div className="flex-grow-1">
                       {[5, 4, 3, 2, 1].map(star => (
@@ -299,11 +299,27 @@ const ProductDetail = () => {
                       ))}
                     </div>
                   </div>
-                  <p className="text-muted text-center py-4" style={{ fontSize: '14px' }}>No written reviews yet. Be the first!</p>
+                  <p className="text-muted text-center py-4" style={{ fontSize: '14px' }}>Chưa có phản hồi bằng văn bản nào. Hãy là người đầu tiên!</p>
                 </div>
               )}
 
-
+              {activeTab === 'shipping' && (
+                <div className="row g-4">
+                  {[
+                    { icon: <Truck size={20} />, title: 'Giao hàng tiêu chuẩn miễn phí', text: 'Cho tất cả các đơn hàng từ 10.000.000 đ. Thời gian nhận hàng từ 3-5 ngày làm việc.' },
+                    { icon: <RotateCcw size={20} />, title: 'Đổi trả miễn phí trong 30 ngày', text: 'Không hài lòng với sản phẩm? Hỗ trợ trả hàng hoàn tiền nhanh chóng trong 30 ngày.' },
+                    { icon: <ShieldCheck size={20} />, title: 'Cam kết chính hãng', text: 'Mỗi sản phẩm đều được kiểm định chất lượng nghiêm ngặt trước khi xuất xưởng.' },
+                  ].map((item, i) => (
+                    <div key={i} className="col-md-4">
+                      <div className="p-4 rounded-3 h-100 border">
+                        <span className="d-block mb-3 text-dark">{item.icon}</span>
+                        <p className="fw-bold text-dark mb-2" style={{ fontSize: '14px' }}>{item.title}</p>
+                        <p className="text-muted mb-0" style={{ fontSize: '13px', lineHeight: '1.6' }}>{item.text}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
 
@@ -319,11 +335,11 @@ const ProductDetail = () => {
               {displaySimilar.map((item, i) => (
                 <div key={item._id || i} className="col-6 col-md-3">
                   <div style={{ cursor: 'pointer' }} onClick={() => navigate(`/product/${item._id}`)}>
-                    <div className="rounded-3 overflow-hidden mb-2" style={{ aspectRatio: '3/4', backgroundColor: '#f5f5f5' }}>
+                    <div className="rounded-3 overflow-hidden mb-2 border" style={{ aspectRatio: '1/1', backgroundColor: '#ffffff' }}>
                       <img
                         src={item.media?.[0]?.media_url}
                         className="w-100 h-100"
-                        style={{ objectFit: 'cover', transition: 'transform 0.3s' }}
+                        style={{ objectFit: 'contain', padding: '4px', transition: 'transform 0.3s' }}
                         alt={item.name}
                         onMouseEnter={e => e.target.style.transform = 'scale(1.04)'}
                         onMouseLeave={e => e.target.style.transform = 'scale(1)'}
@@ -332,7 +348,7 @@ const ProductDetail = () => {
                     <p className="text-uppercase text-muted mb-1" style={{ fontSize: '9px', letterSpacing: '0.8px' }}>{item.category?.name}</p>
                     <p className="fw-medium text-dark mb-1" style={{ fontSize: '13px' }}>{item.name}</p>
                     <StarRow rating={item.average_rating || 4.5} />
-                    <p className="fw-bold text-dark mt-1 mb-0" style={{ fontSize: '14px' }}>${item.base_price?.toFixed(2)}</p>
+                    <p className="fw-bold text-dark mt-1 mb-0" style={{ fontSize: '14px' }}>{item.base_price?.toLocaleString('vi-VN')} đ</p>
                   </div>
                 </div>
               ))}

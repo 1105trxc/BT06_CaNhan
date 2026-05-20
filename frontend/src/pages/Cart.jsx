@@ -106,7 +106,7 @@ const Cart = () => {
                           <div style={{ minWidth: '0' }}>
                             <h6 className="fw-bold mb-1 text-truncate">{item.product?.name}</h6>
                             <p className="mb-0" style={{ fontSize: '13px', color: 'var(--text-muted)' }}>
-                              Unit Price: <span style={{ color: 'var(--text-primary)' }}>${item.unit_price?.toFixed(2)}</span>
+                              Đơn giá: <span style={{ color: 'var(--text-primary)' }}>{item.unit_price?.toLocaleString('vi-VN')} đ</span>
                             </p>
                           </div>
                         </div>
@@ -136,7 +136,7 @@ const Cart = () => {
                           {/* Total & Remove */}
                           <div className="d-flex align-items-center gap-3">
                             <div className="text-end" style={{ width: '80px' }}>
-                              <span className="fw-bold" style={{ fontSize: '16px', color: 'var(--primary-light)' }}>${item.line_total?.toFixed(2)}</span>
+                              <span className="fw-bold" style={{ fontSize: '16px', color: 'var(--primary-light)' }}>{item.line_total?.toLocaleString('vi-VN')} đ</span>
                             </div>
                             <button 
                               className="btn p-2 rounded-3" 
@@ -161,17 +161,17 @@ const Cart = () => {
                   
                   <div className="d-flex flex-column gap-3 mb-4">
                     <div className="d-flex justify-content-between">
-                      <span style={{ color: 'var(--text-muted)' }}>Subtotal</span>
-                      <span className="fw-medium">${totals.subtotal?.toFixed(2)}</span>
+                      <span style={{ color: 'var(--text-muted)' }}>Tạm tính</span>
+                      <span className="fw-medium">{totals.subtotal?.toLocaleString('vi-VN')} đ</span>
                     </div>
                     <div className="d-flex justify-content-between">
-                      <span style={{ color: 'var(--text-muted)' }}>Shipping</span>
-                      <span className="fw-medium">{totals.shipping_fee > 0 ? `$${totals.shipping_fee.toFixed(2)}` : 'Free'}</span>
+                      <span style={{ color: 'var(--text-muted)' }}>Vận chuyển</span>
+                      <span className="fw-medium">{totals.shipping_fee > 0 ? `${totals.shipping_fee.toLocaleString('vi-VN')} đ` : 'Miễn phí'}</span>
                     </div>
                     {totals.discount_total > 0 && (
                       <div className="d-flex justify-content-between">
-                        <span style={{ color: 'var(--text-muted)' }}>Discount</span>
-                        <span style={{ color: 'var(--accent)' }}>-${totals.discount_total?.toFixed(2)}</span>
+                        <span style={{ color: 'var(--text-muted)' }}>Giảm giá</span>
+                        <span style={{ color: 'var(--accent)' }}>-{totals.discount_total?.toLocaleString('vi-VN')} đ</span>
                       </div>
                     )}
                   </div>
@@ -179,8 +179,8 @@ const Cart = () => {
                   <div className="divider-purple mb-4"></div>
 
                   <div className="d-flex justify-content-between align-items-center mb-4">
-                    <span className="fw-bold" style={{ fontSize: '16px' }}>Total</span>
-                    <span className="fw-bold" style={{ fontSize: '24px', color: 'var(--primary-light)' }}>${totals.total?.toFixed(2)}</span>
+                    <span className="fw-bold" style={{ fontSize: '16px' }}>Tổng cộng</span>
+                    <span className="fw-bold" style={{ fontSize: '24px', color: 'var(--primary-light)' }}>{totals.total?.toLocaleString('vi-VN')} đ</span>
                   </div>
 
                   {/* Promo code input */}

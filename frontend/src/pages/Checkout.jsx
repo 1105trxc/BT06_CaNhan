@@ -173,10 +173,10 @@ const Checkout = () => {
                         </div>
                         <div className="flex-grow-1" style={{ minWidth: 0 }}>
                           <div className="fw-bold text-truncate" style={{ fontSize: '13px' }}>{item.product?.name}</div>
-                          <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>${item.unit_price?.toFixed(2)} / item</div>
+                          <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{item.unit_price?.toLocaleString('vi-VN')} đ / sản phẩm</div>
                         </div>
                         <div className="fw-bold" style={{ fontSize: '14px', color: 'var(--primary-light)' }}>
-                          ${item.line_total?.toFixed(2)}
+                          {item.line_total?.toLocaleString('vi-VN')} đ
                         </div>
                       </div>
                     ))
@@ -187,24 +187,24 @@ const Checkout = () => {
 
                 <div className="d-flex flex-column gap-3 mb-4">
                   <div className="d-flex justify-content-between">
-                    <span style={{ color: 'var(--text-muted)' }}>Subtotal</span>
-                    <span className="fw-medium">${totals.subtotal?.toFixed(2)}</span>
+                    <span style={{ color: 'var(--text-muted)' }}>Tạm tính</span>
+                    <span className="fw-medium">{totals.subtotal?.toLocaleString('vi-VN')} đ</span>
                   </div>
                   <div className="d-flex justify-content-between">
-                    <span style={{ color: 'var(--text-muted)' }}>Shipping</span>
-                    <span className="fw-medium">{totals.shipping_fee > 0 ? `$${totals.shipping_fee.toFixed(2)}` : 'Free'}</span>
+                    <span style={{ color: 'var(--text-muted)' }}>Vận chuyển</span>
+                    <span className="fw-medium">{totals.shipping_fee > 0 ? `${totals.shipping_fee.toLocaleString('vi-VN')} đ` : 'Miễn phí'}</span>
                   </div>
                   {totals.discount_total > 0 && (
                     <div className="d-flex justify-content-between">
-                      <span style={{ color: 'var(--text-muted)' }}>Discount</span>
-                      <span style={{ color: 'var(--accent)' }}>-${totals.discount_total?.toFixed(2)}</span>
+                      <span style={{ color: 'var(--text-muted)' }}>Giảm giá</span>
+                      <span className="fw-accent" style={{ color: 'var(--accent)' }}>-{totals.discount_total?.toLocaleString('vi-VN')} đ</span>
                     </div>
                   )}
                 </div>
 
                 <div className="d-flex justify-content-between align-items-center mb-4 p-3 rounded-3" style={{ background: 'var(--surface-2)' }}>
-                  <span className="fw-bold" style={{ fontSize: '16px' }}>Total to pay</span>
-                  <span className="fw-bold" style={{ fontSize: '24px', color: 'var(--primary-light)' }}>${totals.total?.toFixed(2)}</span>
+                  <span className="fw-bold" style={{ fontSize: '16px' }}>Tổng thanh toán</span>
+                  <span className="fw-bold" style={{ fontSize: '24px', color: 'var(--primary-light)' }}>{totals.total?.toLocaleString('vi-VN')} đ</span>
                 </div>
 
                 {isError && (

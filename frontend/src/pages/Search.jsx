@@ -7,12 +7,12 @@ import Layout from '../components/Layout';
 import { ShoppingCart, SlidersHorizontal, ChevronDown, ChevronLeft, ChevronRight, X, Search as SearchIcon, Star } from 'lucide-react';
 
 const SORT_OPTIONS = [
-  { label: 'Relevancy', value: '' },
-  { label: 'Price: Low to High', value: 'price_asc' },
-  { label: 'Price: High to Low', value: 'price_desc' },
-  { label: 'Best Selling', value: 'best_selling' },
-  { label: 'Most Viewed', value: 'most_viewed' },
-  { label: 'Newest', value: 'newest' },
+  { label: 'Mặc định', value: '' },
+  { label: 'Giá: Thấp đến Cao', value: 'price_asc' },
+  { label: 'Giá: Cao đến Thấp', value: 'price_desc' },
+  { label: 'Bán chạy nhất', value: 'best_selling' },
+  { label: 'Xem nhiều nhất', value: 'most_viewed' },
+  { label: 'Mới nhất', value: 'newest' },
 ];
 
 const Search = () => {
@@ -98,7 +98,7 @@ const Search = () => {
 
   const displayProducts = searchResults || [];
   const totalPages = searchPagination?.pages || 1;
-  const activeSortLabel = SORT_OPTIONS.find(o => o.value === filters.sort)?.label || 'Relevancy';
+  const activeSortLabel = SORT_OPTIONS.find(o => o.value === filters.sort)?.label || 'Mặc định';
   const categoryLabel = (slug) => categoryOptions.find(c => c.slug === slug)?.label || slug;
 
   return (
@@ -110,11 +110,11 @@ const Search = () => {
           <div className="position-absolute w-100 h-100 top-0 start-0 z-0 opacity-25" style={{ background: 'var(--grad-hero)' }}></div>
           <div className="container-xl px-4 position-relative z-1 text-center">
             <h1 className="fw-bold mb-3" style={{ fontSize: 'clamp(28px, 4vw, 42px)' }}>
-              {filters.keyword ? `Search Results for "${filters.keyword}"` : 'Marketplace Collection'}
+              {filters.keyword ? `Kết quả tìm kiếm cho "${filters.keyword}"` : 'Bộ sưu tập Máy ảnh'}
             </h1>
             <p style={{ color: 'var(--text-secondary)' }}>
-              {searchPagination?.total ?? displayProducts.length} items found
-              {filters.categories.length > 0 && ` in ${filters.categories.map(categoryLabel).join(', ')}`}
+              Tìm thấy {searchPagination?.total ?? displayProducts.length} sản phẩm
+              {filters.categories.length > 0 && ` thuộc hãng ${filters.categories.map(categoryLabel).join(', ')}`}
             </p>
           </div>
         </div>
@@ -129,14 +129,14 @@ const Search = () => {
                 <input
                   type="text"
                   className="input-dark w-100 m-0"
-                  placeholder="Search products..."
+                  placeholder="Tìm kiếm sản phẩm..."
                   value={searchInput}
                   onChange={e => setSearchInput(e.target.value)}
                   style={{ padding: '10px 16px 10px 40px', borderRadius: 'var(--radius-sm) 0 0 var(--radius-sm)' }}
                 />
               </div>
               <button type="submit" className="btn-purple m-0" style={{ borderRadius: '0 var(--radius-sm) var(--radius-sm) 0', padding: '10px 24px' }}>
-                Search
+                Tìm kiếm
               </button>
             </form>
 
@@ -185,11 +185,11 @@ const Search = () => {
                 <span className="badge d-flex align-items-center gap-1 cursor-pointer"
                   style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', color: 'var(--text-secondary)', padding: '6px 12px', borderRadius: '100px' }}
                   onClick={() => setFilters(prev => ({ ...prev, minPrice: '', maxPrice: '' }))}>
-                  ${filters.minPrice || '0'} – ${filters.maxPrice || '∞'} <X size={12} />
+                  {(Number(filters.minPrice) || 0).toLocaleString('vi-VN')} đ – {filters.maxPrice ? (Number(filters.maxPrice).toLocaleString('vi-VN') + ' đ') : '∞'} <X size={12} />
                 </span>
               )}
               <button className="btn btn-link p-0 text-decoration-none" style={{ color: 'var(--accent)', fontSize: '13px' }} onClick={clearAll}>
-                Clear All
+                Xóa tất cả
               </button>
             </div>
           )}
@@ -200,10 +200,10 @@ const Search = () => {
               <div className="card-glass p-4" style={{ position: 'sticky', top: '100px' }}>
                 <div className="d-flex justify-content-between align-items-center mb-4">
                   <span className="fw-bold d-flex align-items-center gap-2" style={{ fontSize: '16px' }}>
-                    <SlidersHorizontal size={18} color="var(--primary-light)" /> Filters
+                    <SlidersHorizontal size={18} color="var(--primary-light)" /> Bộ lọc
                   </span>
                   <button className="btn btn-link p-0 text-decoration-none" style={{ color: 'var(--text-muted)', fontSize: '12px' }} onClick={clearAll}>
-                    Reset
+                    Thiết lập lại
                   </button>
                 </div>
 
@@ -211,7 +211,7 @@ const Search = () => {
 
                 {/* Categories */}
                 <div className="mb-4">
-                  <p className="fw-bold mb-3" style={{ fontSize: '13px', letterSpacing: '1px', color: 'var(--text-secondary)' }}>CATEGORIES</p>
+                  <p className="fw-bold mb-3" style={{ fontSize: '13px', letterSpacing: '1px', color: 'var(--text-secondary)' }}>HÃNG SẢN XUẤT</p>
                   <div className="d-flex flex-column gap-2">
                     {categoryOptions.map(cat => (
                       <div key={cat.slug} className="form-check d-flex align-items-center mb-0">
@@ -235,12 +235,12 @@ const Search = () => {
 
                 {/* Price Range */}
                 <div className="mb-2">
-                  <p className="fw-bold mb-3" style={{ fontSize: '13px', letterSpacing: '1px', color: 'var(--text-secondary)' }}>PRICE RANGE</p>
+                  <p className="fw-bold mb-3" style={{ fontSize: '13px', letterSpacing: '1px', color: 'var(--text-secondary)' }}>KHOẢNG GIÁ</p>
                   <div className="d-flex align-items-center gap-2">
                     <input
                       type="number"
                       className="input-dark w-100"
-                      placeholder="Min"
+                      placeholder="Từ (đ)"
                       value={filters.minPrice}
                       onChange={e => setFilters({ ...filters, minPrice: e.target.value })}
                       style={{ padding: '8px', fontSize: '13px', textAlign: 'center' }}
@@ -249,7 +249,7 @@ const Search = () => {
                     <input
                       type="number"
                       className="input-dark w-100"
-                      placeholder="Max"
+                      placeholder="Đến (đ)"
                       value={filters.maxPrice}
                       onChange={e => setFilters({ ...filters, maxPrice: e.target.value })}
                       style={{ padding: '8px', fontSize: '13px', textAlign: 'center' }}
@@ -270,9 +270,9 @@ const Search = () => {
                   <div className="mb-3 d-flex justify-content-center">
                     <SearchIcon size={48} color="var(--text-faint)" opacity={0.5} />
                   </div>
-                  <h4 className="fw-bold mb-2">No products found</h4>
-                  <p className="mb-4" style={{ color: 'var(--text-muted)' }}>Try adjusting your search or filters to find what you're looking for.</p>
-                  <button className="btn-purple px-4 py-2" onClick={clearAll}>Clear All Filters</button>
+                  <h4 className="fw-bold mb-2">Không tìm thấy sản phẩm nào</h4>
+                  <p className="mb-4" style={{ color: 'var(--text-muted)' }}>Hãy thử điều chỉnh từ khóa hoặc bộ lọc để tìm sản phẩm mong muốn.</p>
+                  <button className="btn-purple px-4 py-2" onClick={clearAll}>Xóa tất cả bộ lọc</button>
                 </div>
               ) : (
                 <>
@@ -309,8 +309,8 @@ const Search = () => {
                             </div>
                             <div className="d-flex justify-content-between align-items-end mt-1">
                               <div>
-                                <span className="fw-bold" style={{ fontSize: '15px', color: 'var(--text-primary)' }}>${product.base_price?.toFixed(2)}</span>
-                                {product.base_price && <span className="ms-2 text-decoration-line-through" style={{ fontSize: '11px', color: 'var(--text-faint)' }}>${(product.base_price * 1.2).toFixed(2)}</span>}
+                                <span className="fw-bold" style={{ fontSize: '15px', color: 'var(--text-primary)' }}>{product.base_price?.toLocaleString('vi-VN')} đ</span>
+                                {product.base_price && <span className="ms-2 text-decoration-line-through" style={{ fontSize: '11px', color: 'var(--text-faint)' }}>{Math.round(product.base_price * 1.2)?.toLocaleString('vi-VN')} đ</span>}
                               </div>
                               <button 
                                 className="btn rounded-circle d-flex align-items-center justify-content-center p-0"

@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Layout from '../components/Layout';
 import { getMyOrders, cancelOrder } from '../redux/orderSlice';
+import toast from 'react-hot-toast';
 
 const Orders = () => {
   const dispatch = useDispatch();
@@ -16,7 +17,16 @@ const Orders = () => {
   }, [dispatch, user]);
 
   const handleCancel = (orderId) => {
-    dispatch(cancelOrder({ orderId, reason: 'Khách yêu cầu hủy đơn' }));
+    if (window.confirm('Bạn có chắc chắn muốn hủy đơn hàng này không?')) {
+      dispatch(cancelOrder({ orderId, reason: 'Khách yêu cầu hủy đơn' }))
+        .unwrap()
+        .then((res) => {
+          toast.success(res.message || 'Cập nhật trạng thái hủy đơn thành công');
+        })
+        .catch((err) => {
+          toast.error(err || 'Không thể hủy đơn hàng');
+        });
+    }
   };
 
   if (!user) {
