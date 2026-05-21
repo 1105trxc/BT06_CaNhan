@@ -32,9 +32,9 @@ export const searchProducts = createAsyncThunk(
 
 export const getTopProducts = createAsyncThunk(
   'products/getTopProducts',
-  async ({ type }, thunkAPI) => {
+  async ({ type, limit = 50 }, thunkAPI) => {
     try {
-      const response = await axios.get(`${API_URL}/top?type=${type}`);
+      const response = await axios.get(`${API_URL}/top?type=${type}&limit=${limit}`);
       return { type, payload: response.data };
     } catch (error) {
       const message = error.response?.data?.message || error.message || error.toString();

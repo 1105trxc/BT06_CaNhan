@@ -6,7 +6,7 @@ import Layout from '../components/Layout';
 import { ArrowRight, ShieldCheck, Truck, RotateCcw, Star, ShoppingCart, Diamond, ChevronLeft, ChevronRight } from 'lucide-react';
 import { addToCart } from '../redux/cartSlice';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Pagination } from 'swiper/modules';
+import { Navigation, Pagination, Autoplay } from 'swiper/modules';
 
 import 'swiper/css';
 import 'swiper/css/navigation';
@@ -177,8 +177,8 @@ const Home = () => {
 
   useEffect(() => {
     dispatch(getHomeProducts());
-    dispatch(getTopProducts({ type: 'best_selling' }));
-    dispatch(getTopProducts({ type: 'most_viewed' }));
+    dispatch(getTopProducts({ type: 'best_selling', limit: 100 }));
+    dispatch(getTopProducts({ type: 'most_viewed', limit: 100 }));
     dispatch(getCategories());
   }, [dispatch]);
 
@@ -207,84 +207,256 @@ const Home = () => {
     <Layout>
       <div style={{ background: 'var(--bg)', minHeight: '100vh' }}>
 
-        {/* ── Hero Banner ── */}
-        <div className="position-relative overflow-hidden" style={{ minHeight: '85vh', display: 'flex', alignItems: 'center' }}>
-          {/* Background Elements */}
-          <div className="position-absolute w-100 h-100 top-0 start-0 z-0">
-            <div className="position-absolute w-100 h-100" style={{ background: 'var(--grad-hero)', zIndex: 1 }}></div>
-            {/* Abstract Glow Orbs */}
-            <div className="position-absolute rounded-circle" style={{ width: '600px', height: '600px', background: 'var(--primary-glow)', filter: 'blur(100px)', top: '-20%', right: '-10%', zIndex: 2, animation: 'glow-pulse 8s infinite alternate' }}></div>
-            <div className="position-absolute rounded-circle" style={{ width: '400px', height: '400px', background: 'rgba(245, 158, 11, 0.15)', filter: 'blur(80px)', bottom: '10%', left: '-5%', zIndex: 2, animation: 'glow-pulse 10s infinite alternate-reverse' }}></div>
-
-            {/* Grid Pattern Overlay */}
-            <div className="position-absolute w-100 h-100 z-3" style={{
-              backgroundImage: 'linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)',
-              backgroundSize: '40px 40px',
-              opacity: 0.5
-            }}></div>
-          </div>
-
-          <div className="container-xl px-4 position-relative z-10 w-100">
-            <div className="row align-items-center">
-              <div className="col-lg-6 mb-5 mb-lg-0 animate-fade-up">
-                <div className="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill mb-4" style={{ background: 'var(--surface-2)', border: '1px solid var(--border)' }}>
-                  <span className="badge rounded-pill bg-danger" style={{ background: 'var(--grad-amber) !important' }}>HÀNG MỚI VỀ</span>
-                  <span style={{ fontSize: '12px', color: 'var(--text-secondary)', fontWeight: 500 }}>Bộ sưu tập máy ảnh & ống kính mới nhất 2026</span>
+        {/* ── Hero Banner Slider ── */}
+        <div className="position-relative overflow-hidden hero-swiper" style={{ minHeight: '85vh' }}>
+          <Swiper
+            modules={[Navigation, Pagination, Autoplay]}
+            autoplay={{
+              delay: 5000,
+              disableOnInteraction: false,
+            }}
+            pagination={{
+              clickable: true,
+              bulletActiveClass: 'swiper-pagination-bullet-active',
+            }}
+            loop={true}
+            style={{ width: '100%', height: '100%' }}
+          >
+            {/* Slide 1 */}
+            <SwiperSlide>
+              <div className="d-flex align-items-center" style={{ minHeight: '85vh', position: 'relative' }}>
+                {/* Background Elements */}
+                <div className="position-absolute w-100 h-100 top-0 start-0 z-0">
+                  <div className="position-absolute w-100 h-100" style={{ background: 'var(--grad-hero)', zIndex: 1 }}></div>
+                  <div className="position-absolute rounded-circle animate-pulse-slow" style={{ width: '600px', height: '600px', background: 'var(--primary-glow)', filter: 'blur(120px)', top: '-20%', right: '-10%', zIndex: 2 }}></div>
+                  <div className="position-absolute rounded-circle animate-pulse-slow" style={{ width: '400px', height: '400px', background: 'rgba(245, 158, 11, 0.15)', filter: 'blur(80px)', bottom: '10%', left: '-5%', zIndex: 2 }}></div>
+                  <div className="position-absolute w-100 h-100 z-3" style={{
+                    backgroundImage: 'linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)',
+                    backgroundSize: '40px 40px',
+                    opacity: 0.5
+                  }}></div>
                 </div>
 
-                <h1 className="fw-bold mb-4" style={{ fontSize: 'clamp(40px, 6vw, 72px)', lineHeight: '1.05', letterSpacing: '-1px' }}>
-                  Nâng Tầm Nghệ Thuật <br />
-                  <span className="gradient-text glow-text">Nhiếp Ảnh</span>
-                </h1>
+                <div className="container-xl px-4 position-relative z-10 w-100">
+                  <div className="row align-items-center">
+                    <div className="col-lg-6 mb-5 mb-lg-0">
+                      <div className="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill mb-4" style={{ background: 'var(--surface-2)', border: '1px solid var(--border)' }}>
+                        <span className="badge rounded-pill bg-danger" style={{ background: 'var(--grad-amber) !important' }}>HÀNG MỚI VỀ</span>
+                        <span style={{ fontSize: '12px', color: 'var(--text-secondary)', fontWeight: 500 }}>Bộ sưu tập máy ảnh & ống kính mới nhất 2026</span>
+                      </div>
 
-                <p className="mb-5" style={{ fontSize: '16px', lineHeight: '1.7', color: 'var(--text-secondary)', maxWidth: '480px' }}>
-                  Khám phá thế giới qua lăng kính chuyên nghiệp. Nơi cung cấp các dòng máy ảnh, ống kính và phụ kiện kỹ thuật số cao cấp hàng đầu Việt Nam.
-                </p>
+                      <h1 className="fw-bold mb-4" style={{ fontSize: 'clamp(40px, 6vw, 72px)', lineHeight: '1.05', letterSpacing: '-1px' }}>
+                        Nâng Tầm Nghệ Thuật <br />
+                        <span className="gradient-text glow-text">Nhiếp Ảnh</span>
+                      </h1>
 
-                <div className="d-flex gap-3 flex-wrap">
-                  <Link to="/search" className="btn-purple px-5 py-3" style={{ fontSize: '15px' }}>
-                    Mua sắm ngay
-                  </Link>
-                  <Link to="/search?sort=newest" className="btn-outline-purple px-5 py-3" style={{ fontSize: '15px' }}>
-                    Xem xu hướng
-                  </Link>
-                </div>
+                      <p className="mb-5" style={{ fontSize: '16px', lineHeight: '1.7', color: 'var(--text-secondary)', maxWidth: '480px' }}>
+                        Khám phá thế giới qua lăng kính chuyên nghiệp. Nơi cung cấp các dòng máy ảnh, ống kính và phụ kiện kỹ thuật số cao cấp hàng đầu Việt Nam.
+                      </p>
 
-                <div className="d-flex align-items-center gap-4 mt-5 pt-4" style={{ borderTop: '1px solid var(--border)', maxWidth: '400px' }}>
-                  <div>
-                    <h4 className="fw-bold mb-0" style={{ color: 'var(--text-primary)' }}>10k+</h4>
-                    <span style={{ fontSize: '12px', color: 'var(--text-faint)' }}>Khách tin dùng</span>
-                  </div>
-                  <div>
-                    <h4 className="fw-bold mb-0" style={{ color: 'var(--text-primary)' }}>500+</h4>
-                    <span style={{ fontSize: '12px', color: 'var(--text-faint)' }}>Thiết bị cao cấp</span>
-                  </div>
-                  <div>
-                    <h4 className="fw-bold mb-0" style={{ color: 'var(--text-primary)' }}>4.9/5</h4>
-                    <span style={{ fontSize: '12px', color: 'var(--text-faint)' }}>Đánh giá trung bình</span>
+                      <div className="d-flex gap-3 flex-wrap">
+                        <Link to="/search" className="btn-purple px-5 py-3" style={{ fontSize: '15px' }}>
+                          Mua sắm ngay
+                        </Link>
+                        <Link to="/search?sort=newest" className="btn-outline-purple px-5 py-3" style={{ fontSize: '15px' }}>
+                          Xem xu hướng
+                        </Link>
+                      </div>
+
+                      <div className="d-flex align-items-center gap-4 mt-5 pt-4" style={{ borderTop: '1px solid var(--border)', maxWidth: '400px' }}>
+                        <div>
+                          <h4 className="fw-bold mb-0" style={{ color: 'var(--text-primary)' }}>10k+</h4>
+                          <span style={{ fontSize: '12px', color: 'var(--text-faint)' }}>Khách tin dùng</span>
+                        </div>
+                        <div>
+                          <h4 className="fw-bold mb-0" style={{ color: 'var(--text-primary)' }}>500+</h4>
+                          <span style={{ fontSize: '12px', color: 'var(--text-faint)' }}>Thiết bị cao cấp</span>
+                        </div>
+                        <div>
+                          <h4 className="fw-bold mb-0" style={{ color: 'var(--text-primary)' }}>4.9/5</h4>
+                          <span style={{ fontSize: '12px', color: 'var(--text-faint)' }}>Đánh giá trung bình</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="col-lg-5 offset-lg-1 d-none d-lg-block">
+                      <div className="position-relative">
+                        <div className="card-glass p-3 position-relative z-2" style={{ transform: 'rotate(2deg)', transition: 'transform 0.5s' }} onMouseEnter={e => e.currentTarget.style.transform = 'rotate(0deg)'} onMouseLeave={e => e.currentTarget.style.transform = 'rotate(2deg)'}>
+                          <img src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=800&q=80" alt="Camera Hero" className="img-fluid rounded-4" style={{ objectFit: 'cover', aspectRatio: '3/4' }} />
+                        </div>
+                        {/* Floating Elements */}
+                        <div className="card-glass position-absolute p-3 d-flex align-items-center gap-3 z-3" style={{ bottom: '10%', left: '-15%', animation: 'float 4s ease-in-out infinite' }}>
+                          <div className="rounded-circle d-flex align-items-center justify-content-center" style={{ width: '40px', height: '40px', background: 'var(--grad-primary)' }}>
+                            <Star size={20} color="#fff" />
+                          </div>
+                          <div>
+                            <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>Lựa chọn hàng đầu</div>
+                            <div className="fw-bold">Chất lượng cao</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
+            </SwiperSlide>
 
-              <div className="col-lg-5 offset-lg-1 d-none d-lg-block animate-fade-left delay-200">
-                <div className="position-relative">
-                  <div className="card-glass p-3 position-relative z-2" style={{ transform: 'rotate(2deg)', transition: 'transform 0.5s' }} onMouseEnter={e => e.currentTarget.style.transform = 'rotate(0deg)'} onMouseLeave={e => e.currentTarget.style.transform = 'rotate(2deg)'}>
-                    <img src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=800&q=80" alt="Camera Hero" className="img-fluid rounded-4" style={{ objectFit: 'cover', aspectRatio: '3/4' }} />
-                  </div>
-                  {/* Floating Elements */}
-                  <div className="card-glass position-absolute p-3 d-flex align-items-center gap-3 z-3" style={{ bottom: '10%', left: '-15%', animation: 'float 4s ease-in-out infinite' }}>
-                    <div className="rounded-circle d-flex align-items-center justify-content-center" style={{ width: '40px', height: '40px', background: 'var(--grad-primary)' }}>
-                      <Star size={20} color="#fff" />
+            {/* Slide 2 */}
+            <SwiperSlide>
+              <div className="d-flex align-items-center" style={{ minHeight: '85vh', position: 'relative' }}>
+                {/* Background Elements */}
+                <div className="position-absolute w-100 h-100 top-0 start-0 z-0">
+                  <div className="position-absolute w-100 h-100" style={{ background: 'var(--grad-hero)', zIndex: 1 }}></div>
+                  <div className="position-absolute rounded-circle animate-pulse-slow" style={{ width: '600px', height: '600px', background: 'rgba(124, 58, 237, 0.15)', filter: 'blur(120px)', top: '-20%', left: '-10%', zIndex: 2 }}></div>
+                  <div className="position-absolute rounded-circle animate-pulse-slow" style={{ width: '400px', height: '400px', background: 'var(--primary-glow)', filter: 'blur(80px)', bottom: '10%', right: '-5%', zIndex: 2 }}></div>
+                  <div className="position-absolute w-100 h-100 z-3" style={{
+                    backgroundImage: 'linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)',
+                    backgroundSize: '40px 40px',
+                    opacity: 0.5
+                  }}></div>
+                </div>
+
+                <div className="container-xl px-4 position-relative z-10 w-100">
+                  <div className="row align-items-center">
+                    <div className="col-lg-6 mb-5 mb-lg-0">
+                      <div className="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill mb-4" style={{ background: 'var(--surface-2)', border: '1px solid var(--border)' }}>
+                        <span className="badge rounded-pill bg-warning" style={{ background: 'var(--grad-primary) !important' }}>BÁN CHẠY NHẤT</span>
+                        <span style={{ fontSize: '12px', color: 'var(--text-secondary)', fontWeight: 500 }}>Ống kính tiêu cự vàng sắc nét tuyệt đỉnh</span>
+                      </div>
+
+                      <h1 className="fw-bold mb-4" style={{ fontSize: 'clamp(40px, 6vw, 72px)', lineHeight: '1.05', letterSpacing: '-1px' }}>
+                        Bắt Trọn Từng <br />
+                        <span className="gradient-text glow-text">Khoảnh Khắc</span>
+                      </h1>
+
+                      <p className="mb-5" style={{ fontSize: '16px', lineHeight: '1.7', color: 'var(--text-secondary)', maxWidth: '480px' }}>
+                        Sở hữu những ống kính đỉnh cao từ Sony, Canon, Fujifilm. Đem lại độ sắc nét và bokeh hoàn hảo cho mọi khung hình của bạn.
+                      </p>
+
+                      <div className="d-flex gap-3 flex-wrap">
+                        <Link to="/search?category=ong-kinh" className="btn-purple px-5 py-3" style={{ fontSize: '15px' }}>
+                          Khám phá ngay
+                        </Link>
+                        <Link to="/search" className="btn-outline-purple px-5 py-3" style={{ fontSize: '15px' }}>
+                          Xem tất cả sản phẩm
+                        </Link>
+                      </div>
+
+                      <div className="d-flex align-items-center gap-4 mt-5 pt-4" style={{ borderTop: '1px solid var(--border)', maxWidth: '400px' }}>
+                        <div>
+                          <h4 className="fw-bold mb-0" style={{ color: 'var(--text-primary)' }}>100%</h4>
+                          <span style={{ fontSize: '12px', color: 'var(--text-faint)' }}>Chính hãng</span>
+                        </div>
+                        <div>
+                          <h4 className="fw-bold mb-0" style={{ color: 'var(--text-primary)' }}>30 ngày</h4>
+                          <span style={{ fontSize: '12px', color: 'var(--text-faint)' }}>Đổi trả dễ dàng</span>
+                        </div>
+                        <div>
+                          <h4 className="fw-bold mb-0" style={{ color: 'var(--text-primary)' }}>Hỗ trợ 24/7</h4>
+                          <span style={{ fontSize: '12px', color: 'var(--text-faint)' }}>Tận tâm chuyên nghiệp</span>
+                        </div>
+                      </div>
                     </div>
-                    <div>
-                      <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>Lựa chọn hàng đầu</div>
-                      <div className="fw-bold">Chất lượng cao</div>
+
+                    <div className="col-lg-5 offset-lg-1 d-none d-lg-block">
+                      <div className="position-relative">
+                        <div className="card-glass p-3 position-relative z-2" style={{ transform: 'rotate(-2deg)', transition: 'transform 0.5s' }} onMouseEnter={e => e.currentTarget.style.transform = 'rotate(0deg)'} onMouseLeave={e => e.currentTarget.style.transform = 'rotate(-2deg)'}>
+                          <img src="https://images.unsplash.com/photo-1617005082133-548c4dd27f35?auto=format&fit=crop&w=800&q=80" alt="Lens Hero" className="img-fluid rounded-4" style={{ objectFit: 'cover', aspectRatio: '3/4' }} />
+                        </div>
+                        <div className="card-glass position-absolute p-3 d-flex align-items-center gap-3 z-3" style={{ bottom: '15%', right: '-10%', animation: 'float 5s ease-in-out infinite' }}>
+                          <div className="rounded-circle d-flex align-items-center justify-content-center" style={{ width: '40px', height: '40px', background: 'var(--grad-amber)' }}>
+                            <ShieldCheck size={20} color="#fff" />
+                          </div>
+                          <div>
+                            <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>Bảo hành dài hạn</div>
+                            <div className="fw-bold">Chính hãng 100%</div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
+            </SwiperSlide>
+
+            {/* Slide 3 */}
+            <SwiperSlide>
+              <div className="d-flex align-items-center" style={{ minHeight: '85vh', position: 'relative' }}>
+                {/* Background Elements */}
+                <div className="position-absolute w-100 h-100 top-0 start-0 z-0">
+                  <div className="position-absolute w-100 h-100" style={{ background: 'var(--grad-hero)', zIndex: 1 }}></div>
+                  <div className="position-absolute rounded-circle animate-pulse-slow" style={{ width: '600px', height: '600px', background: 'rgba(245, 158, 11, 0.15)', filter: 'blur(120px)', top: '-10%', left: '-10%', zIndex: 2 }}></div>
+                  <div className="position-absolute rounded-circle animate-pulse-slow" style={{ width: '400px', height: '400px', background: 'var(--primary-glow)', filter: 'blur(80px)', bottom: '-10%', right: '-5%', zIndex: 2 }}></div>
+                  <div className="position-absolute w-100 h-100 z-3" style={{
+                    backgroundImage: 'linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)',
+                    backgroundSize: '40px 40px',
+                    opacity: 0.5
+                  }}></div>
+                </div>
+
+                <div className="container-xl px-4 position-relative z-10 w-100">
+                  <div className="row align-items-center">
+                    <div className="col-lg-6 mb-5 mb-lg-0">
+                      <div className="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill mb-4" style={{ background: 'var(--surface-2)', border: '1px solid var(--border)' }}>
+                        <span className="badge rounded-pill bg-info" style={{ background: '#10B981 !important' }}>STUDIO PRO</span>
+                        <span style={{ fontSize: '12px', color: 'var(--text-secondary)', fontWeight: 500 }}>Phụ kiện và ánh sáng phòng chụp chuyên nghiệp</span>
+                      </div>
+
+                      <h1 className="fw-bold mb-4" style={{ fontSize: 'clamp(40px, 6vw, 72px)', lineHeight: '1.05', letterSpacing: '-1px' }}>
+                        Sáng Tạo Không <br />
+                        <span className="gradient-text glow-text">Giới Hạn</span>
+                      </h1>
+
+                      <p className="mb-5" style={{ fontSize: '16px', lineHeight: '1.7', color: 'var(--text-secondary)', maxWidth: '480px' }}>
+                        Trang bị đầy đủ chân máy, đèn flash, filter lọc sáng chuyên nghiệp. Giải pháp hoàn thiện cho các photographer và nhà sáng tạo nội dung xuất sắc.
+                      </p>
+
+                      <div className="d-flex gap-3 flex-wrap">
+                        <Link to="/search?category=phu-kien" className="btn-purple px-5 py-3" style={{ fontSize: '15px' }}>
+                          Trang bị ngay
+                        </Link>
+                        <Link to="/search?promo=true" className="btn-outline-purple px-5 py-3" style={{ fontSize: '15px' }}>
+                          Nhận ưu đãi hot
+                        </Link>
+                      </div>
+
+                      <div className="d-flex align-items-center gap-4 mt-5 pt-4" style={{ borderTop: '1px solid var(--border)', maxWidth: '400px' }}>
+                        <div>
+                          <h4 className="fw-bold mb-0" style={{ color: 'var(--text-primary)' }}>15+</h4>
+                          <span style={{ fontSize: '12px', color: 'var(--text-faint)' }}>Thương hiệu đỉnh cao</span>
+                        </div>
+                        <div>
+                          <h4 className="fw-bold mb-0" style={{ color: 'var(--text-primary)' }}>Giao hỏa tốc</h4>
+                          <span style={{ fontSize: '12px', color: 'var(--text-faint)' }}>Nội thành 2h</span>
+                        </div>
+                        <div>
+                          <h4 className="fw-bold mb-0" style={{ color: 'var(--text-primary)' }}>Giá tốt nhất</h4>
+                          <span style={{ fontSize: '12px', color: 'var(--text-faint)' }}>Cam kết cạnh tranh</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="col-lg-5 offset-lg-1 d-none d-lg-block">
+                      <div className="position-relative">
+                        <div className="card-glass p-3 position-relative z-2" style={{ transform: 'rotate(1deg)', transition: 'transform 0.5s' }} onMouseEnter={e => e.currentTarget.style.transform = 'rotate(0deg)'} onMouseLeave={e => e.currentTarget.style.transform = 'rotate(1deg)'}>
+                          <img src="https://images.unsplash.com/photo-1495707902641-75cac588d2e9?auto=format&fit=crop&w=800&q=80" alt="Accessories Hero" className="img-fluid rounded-4" style={{ objectFit: 'cover', aspectRatio: '3/4' }} />
+                        </div>
+                        <div className="card-glass position-absolute p-3 d-flex align-items-center gap-3 z-3" style={{ bottom: '20%', left: '-15%', animation: 'float 6s ease-in-out infinite' }}>
+                          <div className="rounded-circle d-flex align-items-center justify-content-center" style={{ width: '40px', height: '40px', background: 'var(--grad-primary)' }}>
+                            <Diamond size={20} color="#fff" />
+                          </div>
+                          <div>
+                            <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>Phụ kiện chuyên nghiệp</div>
+                            <div className="fw-bold">Khám phá ngay</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </SwiperSlide>
+          </Swiper>
         </div>
 
         {/* ── Features strip ── */}
@@ -428,7 +600,13 @@ const Home = () => {
             ) : (
               <div className="position-relative px-1">
                 <Swiper
-                  modules={[Navigation, Pagination]}
+                  modules={[Navigation, Pagination, Autoplay]}
+                  autoplay={{
+                    delay: 2000,
+                    disableOnInteraction: false,
+                    pauseOnMouseEnter: true
+                  }}
+                  loop={true}
                   navigation={{
                     prevEl: '.best-prev',
                     nextEl: '.best-next',
@@ -474,7 +652,13 @@ const Home = () => {
             ) : (
               <div className="position-relative px-1">
                 <Swiper
-                  modules={[Navigation, Pagination]}
+                  modules={[Navigation, Pagination, Autoplay]}
+                  autoplay={{
+                    delay: 2000,
+                    disableOnInteraction: false,
+                    pauseOnMouseEnter: true
+                  }}
+                  loop={true}
                   navigation={{
                     prevEl: '.viewed-prev',
                     nextEl: '.viewed-next',
@@ -566,6 +750,9 @@ const Home = () => {
         }
         .swiper-pagination {
           bottom: 10px !important;
+        }
+        .hero-swiper .swiper-pagination {
+          bottom: 25px !important;
         }
         .brand-rect-card {
           transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
