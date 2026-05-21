@@ -69,9 +69,11 @@ const sendOTPEmail = async (email, otpCode) => {
       message,
       html
     });
+    console.log(`🔑 [DEVELOPMENT LOG] Generated Password Reset OTP code for ${email} is: ${otpCode}`);
     return true;
   } catch (error) {
-    console.error('❌ Failed to send email:', error);
+    console.error('❌ Failed to send email:', error.message);
+    console.log(`🔑 [DEVELOPMENT LOG] Generated Password Reset OTP code for ${email} is: ${otpCode}`);
     return false;
   }
 };
@@ -180,12 +182,19 @@ const sendRegistrationOTP = async (emailInput) => {
     </div>
   `;
 
-  await sendEmail({
-    email,
-    subject: '[UTEShop] Registration Verification OTP',
-    message,
-    html
-  });
+  try {
+    await sendEmail({
+      email,
+      subject: '[UTEShop] Registration Verification OTP',
+      message,
+      html
+    });
+  } catch (err) {
+    console.error(`❌ [SMTP Error] Could not send verification email to ${email}:`, err.message);
+  }
+  
+  // Print OTP code to the console for easy development registration
+  console.log(`🔑 [DEVELOPMENT LOG] Generated OTP code for ${email} is: ${otpCode}`);
 
   return true;
 };

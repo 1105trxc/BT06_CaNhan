@@ -13,7 +13,7 @@ const registrationRules = () => {
     body('password')
       .notEmpty().withMessage('Password is required')
       .isLength({ min: 8 }).withMessage('Password must be at least 8 characters')
-      .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)
+      .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/)
       .withMessage('Password must include uppercase, lowercase, numbers, and special characters'),
     
     body('otp_code')

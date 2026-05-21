@@ -10,7 +10,7 @@ const Header = () => {
   const { user } = useSelector((state) => state.auth);
   const { cart } = useSelector((state) => state.cart);
   const cartCount = cart?.items?.reduce((acc, item) => acc + item.quantity, 0) || 0;
-  
+
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -34,9 +34,9 @@ const Header = () => {
   }, [location.pathname]);
 
   const navLinks = [
-    { name: 'Marketplace', path: '/search' },
-    { name: 'Collections', path: '/collections' },
-    { name: 'Orders', path: '/orders' }
+    { name: 'Cửa hàng', path: '/search' },
+    { name: 'Bộ sưu tập', path: '/collections' },
+    { name: 'Đơn hàng', path: '/orders' }
   ];
 
   return (
@@ -97,11 +97,11 @@ const Header = () => {
 
       <header className="fixed-top w-100 header-glass" style={{ zIndex: 1030 }}>
         <div className="container-xl d-flex align-items-center justify-content-between py-3 px-4">
-          
+
           {/* Logo & Desktop Nav */}
           <div className="d-flex align-items-center gap-5">
             <Link to="/" className="d-flex align-items-center gap-2 text-decoration-none">
-              <div className="d-flex align-items-center justify-content-center" 
+              <div className="d-flex align-items-center justify-content-center"
                 style={{ width: '32px', height: '32px', background: 'var(--grad-primary)', borderRadius: '8px', boxShadow: '0 0 15px var(--primary-glow)' }}>
                 <Diamond size={18} color="#fff" />
               </div>
@@ -110,9 +110,9 @@ const Header = () => {
 
             <nav className="d-none d-md-flex gap-4">
               {navLinks.map(link => (
-                <Link 
-                  key={link.name} 
-                  to={link.path} 
+                <Link
+                  key={link.name}
+                  to={link.path}
                   className={`nav-link-custom ${location.pathname.startsWith(link.path) ? 'active' : ''}`}
                 >
                   {link.name}
@@ -123,7 +123,7 @@ const Header = () => {
 
           {/* Actions & User */}
           <div className="d-flex align-items-center gap-4">
-            
+
             <div className="d-none d-sm-flex align-items-center gap-3 pe-3" style={{ borderRight: '1px solid var(--border)' }}>
               <Link to="/search" className="icon-btn text-decoration-none">
                 <Search size={20} />
@@ -135,7 +135,7 @@ const Header = () => {
               <Link to="/cart" className="icon-btn text-decoration-none position-relative">
                 <ShoppingCart size={20} />
                 {cartCount > 0 && (
-                  <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill" 
+                  <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill"
                     style={{ background: 'var(--grad-amber)', fontSize: '10px', border: '2px solid var(--surface)' }}>
                     {cartCount > 99 ? '99+' : cartCount}
                   </span>
@@ -145,11 +145,11 @@ const Header = () => {
 
             {user ? (
               <Link to="/user/profile" className="d-flex align-items-center gap-2 text-decoration-none">
-                <img 
-                  src={user.avatar || `https://ui-avatars.com/api/?name=${user.full_name}&background=7C3AED&color=fff`} 
-                  alt={user.full_name} 
-                  className="rounded-circle" 
-                  style={{ width: '36px', height: '36px', objectFit: 'cover', border: '2px solid var(--border-strong)' }} 
+                <img
+                  src={user.avatar || `https://ui-avatars.com/api/?name=${user.full_name}&background=7C3AED&color=fff`}
+                  alt={user.full_name}
+                  className="rounded-circle"
+                  style={{ width: '36px', height: '36px', objectFit: 'cover', border: '2px solid var(--border-strong)' }}
                 />
                 <span className="d-none d-lg-block fw-semibold" style={{ color: 'var(--text-primary)', fontSize: '14px' }}>
                   {user.full_name.split(' ')[0]}
@@ -157,13 +157,13 @@ const Header = () => {
               </Link>
             ) : (
               <div className="d-none d-sm-flex align-items-center gap-3">
-                <Link to="/login" className="text-decoration-none" style={{ color: 'var(--text-secondary)', fontSize: '14px', fontWeight: 600 }}>Log In</Link>
-                <Link to="/register" className="btn-purple px-4 py-2" style={{ fontSize: '14px' }}>Sign Up</Link>
+                <Link to="/login" className="text-decoration-none" style={{ color: 'var(--text-secondary)', fontSize: '14px', fontWeight: 600 }}>Đăng nhập</Link>
+                <Link to="/register" className="btn-purple px-4 py-2" style={{ fontSize: '14px' }}>Đăng ký</Link>
               </div>
             )}
 
             {/* Mobile menu toggle */}
-            <button 
+            <button
               className="d-md-none btn p-0 border-0" style={{ color: 'var(--text-primary)' }}
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
@@ -177,9 +177,9 @@ const Header = () => {
           <div className="d-md-none" style={{ background: 'var(--surface)', borderBottom: '1px solid var(--border)' }}>
             <div className="container-xl px-4 py-3 d-flex flex-column gap-3">
               {navLinks.map(link => (
-                <Link 
-                  key={link.name} 
-                  to={link.path} 
+                <Link
+                  key={link.name}
+                  to={link.path}
                   className="text-decoration-none fw-medium"
                   style={{ color: location.pathname.startsWith(link.path) ? 'var(--primary-light)' : 'var(--text-primary)' }}
                 >
@@ -188,15 +188,15 @@ const Header = () => {
               ))}
               {!user && (
                 <div className="d-flex flex-column gap-2 mt-2 pt-3" style={{ borderTop: '1px solid var(--border)' }}>
-                  <Link to="/login" className="btn btn-outline-purple w-100 justify-content-center">Log In</Link>
-                  <Link to="/register" className="btn-purple w-100 justify-content-center">Sign Up</Link>
+                  <Link to="/login" className="btn btn-outline-purple w-100 justify-content-center">Đăng nhập</Link>
+                  <Link to="/register" className="btn-purple w-100 justify-content-center">Đăng ký</Link>
                 </div>
               )}
             </div>
           </div>
         )}
       </header>
-      
+
       {/* Spacer to prevent content from hiding under fixed header */}
       <div style={{ height: '70px' }}></div>
     </>

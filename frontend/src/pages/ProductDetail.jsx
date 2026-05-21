@@ -24,7 +24,7 @@ const StarRow = ({ rating = 4.8, count }) => (
         <i key={i} className={`fa-solid ${i < Math.floor(rating) ? 'fa-star' : i < rating ? 'fa-star-half-stroke' : 'fa-star opacity-25'}`}></i>
       ))}
     </div>
-    <span className="text-muted" style={{ fontSize: '13px' }}>({rating} · {count || 0} reviews)</span>
+    <span className="text-muted" style={{ fontSize: '13px' }}>({rating} · {count || 0} đánh giá)</span>
   </div>
 );
 
@@ -100,7 +100,7 @@ const ProductDetail = () => {
           {/* Breadcrumb */}
           <nav className="mb-4">
             <ol className="breadcrumb mb-0" style={{ fontSize: '12px' }}>
-              <li className="breadcrumb-item"><Link to="/home" className="text-decoration-none text-muted">Home</Link></li>
+              <li className="breadcrumb-item"><Link to="/home" className="text-decoration-none text-muted">Trang chủ</Link></li>
               <li className="breadcrumb-item text-muted"><ChevronRight size={12} className="mx-1" />{product.category?.name}</li>
               <li className="breadcrumb-item text-dark active" style={{ maxWidth: '250px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                 <ChevronRight size={12} className="mx-1" />{product.name}
@@ -160,10 +160,10 @@ const ProductDetail = () => {
               {/* Badges */}
               <div className="d-flex flex-wrap gap-2 mb-3">
                 <span className="badge rounded-pill border fw-normal px-3 py-2" style={{ fontSize: '11px', backgroundColor: 'var(--surface-2)', color: 'var(--text-secondary)' }}>
-                  New Season Arrival
+                  Bộ Sưu Tập Mới
                 </span>
                 <span className="badge rounded-pill border fw-normal px-3 py-2" style={{ fontSize: '11px', backgroundColor: 'var(--surface-2)', color: 'var(--text-secondary)' }}>
-                  UTEShop Exclusive
+                  Độc Quyền UTEShop
                 </span>
               </div>
 
@@ -175,7 +175,7 @@ const ProductDetail = () => {
               {/* Rating + Sold */}
               <div className="d-flex align-items-center flex-wrap gap-3 mb-3">
                 <StarRow rating={product.average_rating || 4.8} count={product.sold_quantity} />
-                <span className="text-muted" style={{ fontSize: '13px' }}>{product.sold_quantity || 842} sold</span>
+                <span className="text-muted" style={{ fontSize: '13px' }}>Đã bán {product.sold_quantity || 842}</span>
               </div>
 
               {/* Price */}
@@ -183,12 +183,12 @@ const ProductDetail = () => {
                 <span className="fw-bold text-dark" style={{ fontSize: '28px' }}>{product.base_price?.toLocaleString('vi-VN')} đ</span>
                 <span className="text-muted text-decoration-line-through" style={{ fontSize: '18px' }}>{oldPrice?.toLocaleString('vi-VN')} đ</span>
                 <span className="badge text-white fw-bold px-2 py-1 rounded-1" style={{ fontSize: '11px', backgroundColor: '#e11d48' }}>
-                  {discountPct}% OFF
+                  GIẢM {discountPct}%
                 </span>
               </div>
               <p className="text-muted mb-3" style={{ fontSize: '12px' }}>
                 <ShieldCheck size={13} className="me-1 text-success" />
-                Exclusive pricing for VIP members and subscribers.
+                Giá độc quyền dành cho thành viên VIP và người đăng ký.
               </p>
 
               <hr className="my-3" />
@@ -196,7 +196,7 @@ const ProductDetail = () => {
 
               {/* Quantity */}
               <div className="mb-4">
-                <p className="fw-bold text-dark mb-2" style={{ fontSize: '12px', letterSpacing: '0.5px', textTransform: 'uppercase' }}>Quantity</p>
+                <p className="fw-bold text-dark mb-2" style={{ fontSize: '12px', letterSpacing: '0.5px', textTransform: 'uppercase' }}>Số lượng</p>
                 <div className="d-flex align-items-center gap-3">
                   <div className="d-flex align-items-center border rounded-2 overflow-hidden" style={{ width: '120px' }}>
                     <button className="btn btn-light border-0 px-3 py-2" onClick={() => setQuantity(q => Math.max(1, q - 1))}>
@@ -326,9 +326,9 @@ const ProductDetail = () => {
           {/* Similar Products */}
           <div className="mb-5">
             <div className="d-flex justify-content-between align-items-center mb-4">
-              <h2 className="fw-bold text-dark mb-0" style={{ fontSize: '18px' }}>You Might Also Like</h2>
+              <h2 className="fw-bold text-dark mb-0" style={{ fontSize: '18px' }}>Có Thể Bạn Cũng Thích</h2>
               <Link to="/search" className="text-dark text-decoration-none d-flex align-items-center gap-1 fw-medium" style={{ fontSize: '13px' }}>
-                View All <ArrowRight size={14} />
+                Xem tất cả <ArrowRight size={14} />
               </Link>
             </div>
             <div className="row g-3">

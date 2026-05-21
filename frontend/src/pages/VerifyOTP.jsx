@@ -119,73 +119,88 @@ const VerifyOTP = () => {
 
   return (
     <Layout>
-      <div className="bg-white shadow-sm border rounded-4 p-4 p-md-5 mb-4 text-center" style={{ width: '100%', maxWidth: '480px' }}>
-        <div className="mx-auto mb-4 d-flex align-items-center justify-content-center rounded-circle" 
-             style={{ width: '64px', height: '64px', backgroundColor: '#eff6ff', color: '#2563eb' }}>
-          <i className="fa-solid fa-shield-halved fs-3"></i>
-        </div>
+      <div className="position-relative d-flex align-items-center justify-content-center py-5" style={{ minHeight: 'calc(100vh - 70px)', background: 'var(--bg)', overflow: 'hidden' }}>
         
-        <h1 className="fw-bold h3 mb-2">Verify Identity</h1>
-        <p className="text-muted small mb-4">
-          We've sent a 6-digit verification code to<br />
-          <strong className="text-dark">{regData?.email}</strong>
-        </p>
+        {/* Background Effects */}
+        <div className="position-absolute top-0 start-0 w-100 h-100 z-0">
+          <div className="position-absolute rounded-circle" style={{ width: '600px', height: '600px', background: 'var(--primary-glow)', filter: 'blur(120px)', top: '-20%', right: '-10%', zIndex: 0, animation: 'glow-pulse 10s infinite alternate' }}></div>
+          <div className="position-absolute rounded-circle" style={{ width: '400px', height: '400px', background: 'rgba(124, 58, 237, 0.1)', filter: 'blur(80px)', bottom: '-10%', left: '-10%', zIndex: 0, animation: 'glow-pulse 8s infinite alternate-reverse' }}></div>
+        </div>
 
-        <form onSubmit={onSubmit}>
-          <div className="d-flex justify-content-between gap-2 mb-4">
-            {otp.map((digit, index) => (
-              <input
-                key={index}
-                ref={inputRefs[index]}
-                type="text"
-                className={`form-control text-center fw-bold fs-4 ${digit ? 'border-primary' : ''}`}
-                style={{ width: '50px', height: '60px', color: '#2563eb' }}
-                value={digit}
-                maxLength={1}
-                onChange={(e) => handleChange(index, e.target.value)}
-                onKeyDown={(e) => handleKeyDown(index, e)}
-              />
-            ))}
+        <div className="container-xl position-relative z-1 d-flex flex-column align-items-center justify-content-center">
+          
+          <div className="card-glass w-100 animate-fade-up text-center" style={{ maxWidth: '480px', padding: '40px' }}>
+            <div className="mx-auto mb-4 d-flex align-items-center justify-content-center" 
+                 style={{ width: '64px', height: '64px', background: 'var(--grad-primary)', borderRadius: '18px', boxShadow: '0 0 20px var(--primary-glow)', color: '#fff' }}>
+              <i className="fa-solid fa-shield-halved fs-3"></i>
+            </div>
+            
+            <h2 className="fw-bold mb-2" style={{ fontSize: '28px', color: 'var(--text-primary)' }}>Verify Identity</h2>
+            <p style={{ color: 'var(--text-secondary)' }} className="mb-4">
+              We've sent a 6-digit verification code to<br />
+              <strong style={{ color: 'var(--text-primary)' }}>{regData?.email}</strong>
+            </p>
+
+            <form onSubmit={onSubmit}>
+              <div className="d-flex justify-content-between gap-2 mb-4">
+                {otp.map((digit, index) => (
+                  <input
+                    key={index}
+                    ref={inputRefs[index]}
+                    type="text"
+                    className="input-dark text-center fw-bold fs-4"
+                    style={{ width: '52px', height: '60px' }}
+                    value={digit}
+                    maxLength={1}
+                    onChange={(e) => handleChange(index, e.target.value)}
+                    onKeyDown={(e) => handleKeyDown(index, e)}
+                  />
+                ))}
+              </div>
+
+              <div className="timer-info small mb-2 d-flex align-items-center justify-content-center gap-2" style={{ color: 'var(--text-secondary)' }}>
+                <i className="fa-regular fa-clock"></i>
+                Resend code in <span className="fw-bold" style={{ color: 'var(--primary)' }}>{formatTime(timer)}</span>
+              </div>
+
+              <button 
+                type="button"
+                className={`btn btn-link p-0 small fw-bold mb-4 text-decoration-none ${canResend ? '' : 'disabled'}`}
+                disabled={!canResend}
+                onClick={onResendOTP}
+                style={{ 
+                  cursor: canResend ? 'pointer' : 'not-allowed', 
+                  color: canResend ? 'var(--primary)' : 'var(--text-muted)' 
+                }}
+              >
+                <i className="fa-solid fa-arrow-rotate-right me-2"></i>
+                Resend OTP
+              </button>
+
+              <PrimaryButton type="submit" isLoading={isLoading} className="py-3 rounded-3 mb-4 shadow-sm w-100">
+                Verify & Continue
+              </PrimaryButton>
+            </form>
+
+            <div className="border-top w-75 mx-auto mb-4" style={{ borderColor: 'var(--border)' }}></div>
+
+            <button onClick={() => navigate('/register')} className="btn btn-link small text-decoration-none mb-4 fw-medium" style={{ color: 'var(--text-muted)' }}>
+              <i className="fa-solid fa-arrow-left me-2"></i> Back to registration
+            </button>
+
+            <p className="small fst-italic px-4" style={{ color: 'var(--text-secondary)' }}>
+              Didn't receive the email? Check your spam folder or try another address.
+            </p>
           </div>
 
-          <div className="timer-info small text-muted mb-2 d-flex align-items-center justify-content-center gap-2">
-            <i className="fa-regular fa-clock"></i>
-            Resend code in <span className="text-primary fw-bold">{formatTime(timer)}</span>
+          <div className="mt-4 d-flex gap-4 text-muted small fw-bold" style={{ letterSpacing: '1px', fontSize: '10px' }}>
+            <a href="#" className="text-decoration-none text-muted hover-dark">PRIVACY POLICY</a>
+            <span>&bull;</span>
+            <a href="#" className="text-decoration-none text-muted hover-dark">TERMS OF SERVICE</a>
+            <span>&bull;</span>
+            <a href="#" className="text-decoration-none text-muted hover-dark">HELP CENTER</a>
           </div>
-
-          <button 
-            type="button"
-            className={`btn btn-link p-0 small fw-bold mb-4 text-decoration-none ${canResend ? 'text-primary' : 'text-muted'}`}
-            disabled={!canResend}
-            onClick={onResendOTP}
-            style={{ cursor: canResend ? 'pointer' : 'not-allowed' }}
-          >
-            <i className="fa-solid fa-arrow-rotate-right me-2"></i>
-            Resend OTP
-          </button>
-
-          <PrimaryButton type="submit" isLoading={isLoading} className="py-3 rounded-3 mb-4 shadow-sm">
-            Verify & Continue
-          </PrimaryButton>
-        </form>
-
-        <div className="border-top w-75 mx-auto mb-4"></div>
-
-        <button onClick={() => navigate('/register')} className="btn btn-link text-muted small text-decoration-none mb-4 fw-medium">
-          <i className="fa-solid fa-arrow-left me-2"></i> Back to registration
-        </button>
-
-        <p className="small text-muted fst-italic px-4">
-          Didn't receive the email? Check your spam folder or try another address.
-        </p>
-      </div>
-
-      <div className="mt-4 d-flex gap-4 text-muted small fw-bold" style={{ letterSpacing: '1px', fontSize: '10px' }}>
-        <a href="#" className="text-decoration-none text-muted hover-dark">PRIVACY POLICY</a>
-        <span>&bull;</span>
-        <a href="#" className="text-decoration-none text-muted hover-dark">TERMS OF SERVICE</a>
-        <span>&bull;</span>
-        <a href="#" className="text-decoration-none text-muted hover-dark">HELP CENTER</a>
+        </div>
       </div>
     </Layout>
   );

@@ -48,7 +48,7 @@ const Register = () => {
   const onSubmit = (e) => {
     e.preventDefault();
 
-    const passwordPolicy = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    const passwordPolicy = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
 
     if (!passwordPolicy.test(password)) {
       toast.dismiss();

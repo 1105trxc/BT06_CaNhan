@@ -17,6 +17,7 @@ const statusHistorySchema = new mongoose.Schema({
 const orderSchema = new mongoose.Schema({
   order_code: { type: String, required: true, unique: true },
   customer: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  shop: { type: mongoose.Schema.Types.ObjectId, ref: 'Shop', required: true },
   shipper: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   assigned_at: { type: Date },
   coupon: { type: mongoose.Schema.Types.ObjectId, ref: 'Coupon' },

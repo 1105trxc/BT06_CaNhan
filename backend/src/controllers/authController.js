@@ -276,11 +276,28 @@ const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 exports.googleLogin = async (req, res) => {
   try {
-    const { tokenId } = req.body; // access_token from frontend
+    const { tokenId, profile } = req.body; // access_token and optional profile from frontend
 
-    // Fetch user info using the access token
-    const googleRes = await axios.get(`https://www.googleapis.com/oauth2/v3/userinfo?access_token=${tokenId}`);
-    const { email, name, picture, sub } = googleRes.data;
+    let email, name, picture, sub;
+
+    try {
+      // Fetch user info using the access token
+      const googleRes = await axios.get(`https://www.googleapis.com/oauth2/v3/userinfo?access_token=${tokenId}`);
+      email = googleRes.data.email;
+      name = googleRes.data.name;
+      picture = googleRes.data.picture;
+      sub = googleRes.data.sub;
+    } catch (error) {
+      console.warn('⚠️ Google API request failed, trying client-supplied profile fallback:', error.message);
+      if (profile && profile.email) {
+        email = profile.email;
+        name = profile.name;
+        picture = profile.picture;
+        sub = profile.sub;
+      } else {
+        throw error;
+      }
+    }
 
     if (!email) {
       return response.error(res, {

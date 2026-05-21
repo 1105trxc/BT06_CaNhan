@@ -50,14 +50,37 @@ const seedDatabase = async () => {
 
     await Cart.collection.dropIndexes().catch(() => {});
 
-    console.log('🏪 Seeding Shop...');
-    const shop = await Shop.create({
-      name: 'UTEShop Official Store',
-      address: '01 Võ Văn Ngân, Linh Chiểu, Thủ Đức, TP.HCM',
-      phone: '02837221223',
-      logo_url: 'https://ute.edu.vn/logo.png',
-      description: 'Cửa hàng chính thức của trường ĐH Sư phạm Kỹ thuật TP.HCM'
-    });
+    console.log('🏪 Seeding Shops...');
+    const shops = await Shop.insertMany([
+      {
+        name: 'UTEShop Official Store',
+        address: '01 Võ Văn Ngân, Linh Chiểu, Thủ Đức, TP.HCM',
+        phone: '02837221223',
+        logo_url: 'https://ute.edu.vn/logo.png',
+        description: 'Cửa hàng chính thức của trường ĐH Sư phạm Kỹ thuật TP.HCM'
+      },
+      {
+        name: 'UTE Tech Zone',
+        address: '01 Võ Văn Ngân, Linh Chiểu, Thủ Đức, TP.HCM',
+        phone: '0909123456',
+        logo_url: 'https://placehold.co/100x100?text=TechZone',
+        description: 'Chuyên cung cấp các thiết bị công nghệ, máy ảnh chính hãng phục vụ học tập'
+      },
+      {
+        name: 'UTE Book Center',
+        address: '484 Lê Văn Việt, Tăng Nhơn Phú A, Quận 9, TP.HCM',
+        phone: '0908765432',
+        logo_url: 'https://placehold.co/100x100?text=BookCenter',
+        description: 'Hiệu sách, văn phòng phẩm và giáo trình học tập của sinh viên UTE'
+      },
+      {
+        name: 'UTE Fashion & Lifestyle',
+        address: '01 Võ Văn Ngân, Linh Chiểu, Thủ Đức, TP.HCM',
+        phone: '0905111222',
+        logo_url: 'https://placehold.co/100x100?text=Fashion',
+        description: 'Thời trang, đồng phục, phụ kiện và phong cách sống năng động UTE'
+      }
+    ]);
 
     console.log('👤 Seeding Users...');
     const hashedPassword = await bcrypt.hash('password123', 10);
@@ -69,7 +92,7 @@ const seedDatabase = async () => {
       { full_name: 'Shipper Hoàng Văn D', email: 'shipper@gmail.com', password: hashedPassword, role: 'shipper', status: 'active', shipper_details: { vehicle_type: 'Xe máy', license_plate: '59-X1 123.45', is_available: true } }
     ]);
 
-    const productDir = path.join(__dirname, 'product');
+    const productDir = path.join(__dirname, 'json', 'product');
     const brands = fs.readdirSync(productDir).filter(f => fs.statSync(path.join(productDir, f)).isDirectory());
 
     console.log(`🔍 Found brand directories: ${brands.join(', ')}`);
@@ -140,8 +163,18 @@ const seedDatabase = async () => {
         const slug = `${slugify(p.name)}-${suffix}`;
 
         const baseSales = Math.floor(Math.random() * 500) + 10;
+        let assignedShop = shops[0]; // Mặc định là UTEShop Official Store
+        const brandUpper = brand.toUpperCase();
+        if (['CANON', 'NIKON', 'SONY'].includes(brandUpper)) {
+          assignedShop = shops[1]; // UTE Tech Zone
+        } else if (['RICOH', 'FUJIFILM'].includes(brandUpper)) {
+          assignedShop = shops[2]; // UTE Book Center
+        } else if (['KODAK'].includes(brandUpper)) {
+          assignedShop = shops[3]; // UTE Fashion & Lifestyle
+        }
+
         const newProduct = new Product({
-          shop: shop._id,
+          shop: assignedShop._id,
           category: brandCategory._id,
           name: p.name,
           slug: slug,
@@ -185,11 +218,20 @@ const seedDatabase = async () => {
 
     for (let i = 0; i < 50; i++) {
       const customer = customerList[Math.floor(Math.random() * customerList.length)];
-      const numItems = Math.floor(Math.random() * 3) + 1;
+      
+      // Chọn ngẫu nhiên 1 sản phẩm đầu tiên để xác định Shop của đơn hàng này
+      const baseProduct = allSeededProducts[Math.floor(Math.random() * allSeededProducts.length)];
+      const orderShopId = baseProduct.shop;
+
+      // Tìm tất cả sản phẩm cùng Shop đó
+      const productsSameShop = allSeededProducts.filter(p => p.shop.toString() === orderShopId.toString());
+      
+      // Chọn ngẫu nhiên từ 1 đến 3 sản phẩm cùng Shop
+      const numItems = Math.min(productsSameShop.length, Math.floor(Math.random() * 3) + 1);
+      const selectedProducts = [...productsSameShop].sort(() => 0.5 - Math.random()).slice(0, numItems);
+
       const items = [];
       let totalBase = 0;
-
-      const selectedProducts = [...allSeededProducts].sort(() => 0.5 - Math.random()).slice(0, numItems);
 
       for (let prod of selectedProducts) {
         const qty = Math.floor(Math.random() * 2) + 1;
@@ -207,6 +249,7 @@ const seedDatabase = async () => {
       newOrders.push({
         order_code: `ORD-${Date.now()}-${i}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`,
         customer: customer._id,
+        shop: orderShopId, // Gán đúng Shop cho đơn hàng
         status: status,
         total_base: totalBase,
         shipping_fee: shippingFee,

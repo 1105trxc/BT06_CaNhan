@@ -111,9 +111,15 @@ export const uploadAvatar = createAsyncThunk('auth/uploadAvatar', async (formDat
   }
 });
 
-export const googleLogin = createAsyncThunk('auth/googleLogin', async (tokenId, thunkAPI) => {
+export const googleLogin = createAsyncThunk('auth/googleLogin', async (payload, thunkAPI) => {
   try {
-    const response = await axios.post(`${API_URL}/google`, { tokenId });
+    let tokenId = payload;
+    let profile = null;
+    if (typeof payload === 'object' && payload !== null) {
+      tokenId = payload.tokenId;
+      profile = payload.profile;
+    }
+    const response = await axios.post(`${API_URL}/google`, { tokenId, profile });
     if (response.data.data) {
       localStorage.setItem('user', JSON.stringify(response.data.data.user));
       localStorage.setItem('token', response.data.data.token);

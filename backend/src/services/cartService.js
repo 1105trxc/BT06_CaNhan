@@ -2,10 +2,10 @@ const Cart = require('../models/Cart');
 const Product = require('../models/Product');
 
 const getOrCreateCart = async (userId) => {
-  let cart = await Cart.findOne({ user: userId }).populate('items.product');
+  let cart = await Cart.findOne({ user: userId }).populate({ path: 'items.product', populate: { path: 'shop' } });
   if (!cart) {
     cart = await Cart.create({ user: userId, items: [] });
-    cart = await Cart.findById(cart._id).populate('items.product');
+    cart = await Cart.findById(cart._id).populate({ path: 'items.product', populate: { path: 'shop' } });
   }
   return cart;
 };
@@ -79,7 +79,7 @@ const addItem = async (userId, payload) => {
   }
 
   await cart.save();
-  await cart.populate('items.product');
+  await cart.populate({ path: 'items.product', populate: { path: 'shop' } });
   return buildCartTotals(cart);
 };
 
@@ -100,7 +100,7 @@ const updateItem = async (userId, itemId, payload) => {
   if (note !== undefined) item.note = note;
 
   await cart.save();
-  await cart.populate('items.product');
+  await cart.populate({ path: 'items.product', populate: { path: 'shop' } });
   return buildCartTotals(cart);
 };
 
@@ -114,7 +114,7 @@ const removeItem = async (userId, itemId) => {
   }
   item.deleteOne();
   await cart.save();
-  await cart.populate('items.product');
+  await cart.populate({ path: 'items.product', populate: { path: 'shop' } });
   return buildCartTotals(cart);
 };
 

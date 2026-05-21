@@ -80,7 +80,7 @@ const ProductCard = ({ name, category, price, oldPrice, badge, badgeColor, img, 
 
       <div className="p-3 d-flex flex-column flex-grow-1 bg-transparent">
         <p className="text-uppercase mb-1" style={{ color: 'var(--primary-light)', fontSize: '10px', letterSpacing: '1px', fontWeight: 600 }}>
-          {category || 'CATEGORY'}
+          {category || 'DANH MỤC'}
         </p>
         <p className="fw-medium mb-2 text-primary-hover flex-grow-1" style={{ fontSize: '14px', lineHeight: '1.4', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
           {name}
@@ -131,7 +131,7 @@ const CarouselSectionHeader = ({ title, subtitle, prevElClass, nextElClass, link
     </div>
     <div className="d-flex align-items-center gap-3">
       <Link to={linkTo} className="text-decoration-none d-flex align-items-center gap-2 fw-medium btn-outline-purple px-3 py-1" style={{ fontSize: '13px' }}>
-        View All <ArrowRight size={14} />
+        Xem tất cả <ArrowRight size={14} />
       </Link>
       <div className="d-none d-md-flex align-items-center gap-2">
         <button className={`${prevElClass} carousel-btn btn rounded-circle d-flex align-items-center justify-content-center p-0`} style={{ width: '36px', height: '36px' }}>
@@ -153,7 +153,7 @@ const SectionHeader = ({ title, linkTo, subtitle }) => (
       <h2 className="fw-bold" style={{ fontSize: '28px', color: 'var(--text-primary)' }}>{title}</h2>
     </div>
     <Link to={linkTo} className="text-decoration-none d-flex align-items-center gap-2 fw-medium btn-outline-purple px-3 py-1" style={{ fontSize: '13px' }}>
-      View All <ArrowRight size={14} />
+      Xem tất cả <ArrowRight size={14} />
     </Link>
   </div>
 );
@@ -228,7 +228,7 @@ const Home = () => {
             <div className="row align-items-center">
               <div className="col-lg-6 mb-5 mb-lg-0 animate-fade-up">
                 <div className="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill mb-4" style={{ background: 'var(--surface-2)', border: '1px solid var(--border)' }}>
-                  <span className="badge rounded-pill bg-danger" style={{ background: 'var(--grad-amber) !important' }}>NEW ARRIVAL</span>
+                  <span className="badge rounded-pill bg-danger" style={{ background: 'var(--grad-amber) !important' }}>HÀNG MỚI VỀ</span>
                   <span style={{ fontSize: '12px', color: 'var(--text-secondary)', fontWeight: 500 }}>Bộ sưu tập máy ảnh & ống kính mới nhất 2026</span>
                 </div>
 

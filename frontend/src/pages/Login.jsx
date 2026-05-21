@@ -57,8 +57,23 @@ const Login = () => {
   };
 
   const handleGoogleLogin = useGoogleLogin({
-    onSuccess: (tokenResponse) => {
-      dispatch(googleLogin(tokenResponse.access_token));
+    onSuccess: async (tokenResponse) => {
+      try {
+        const res = await fetch(`https://www.googleapis.com/oauth2/v3/userinfo?access_token=${tokenResponse.access_token}`);
+        const profile = await res.json();
+        dispatch(googleLogin({
+          tokenId: tokenResponse.access_token,
+          profile: {
+            email: profile.email,
+            name: profile.name,
+            picture: profile.picture,
+            sub: profile.sub
+          }
+        }));
+      } catch (err) {
+        console.warn('Frontend failed to fetch Google profile info:', err);
+        dispatch(googleLogin({ tokenId: tokenResponse.access_token }));
+      }
     },
     onError: () => toast.error('Google Login Failed', { style: { background: 'var(--surface-3)', color: '#fff' } }),
   });

@@ -83,46 +83,96 @@ const checkoutCOD = async (userId, payload) => {
     throw error;
   }
 
-  const cart = await Cart.findOne({ user: userId });
+  // Lấy giỏ hàng và populate chi tiết sản phẩm cùng nhà cung cấp (Shop)
+  const cart = await Cart.findOne({ user: userId }).populate({ path: 'items.product', populate: { path: 'shop' } });
   if (!cart || cart.items.length === 0) {
     const error = new Error('Giỏ hàng đang trống');
     error.statusCode = 400;
     throw error;
   }
 
-  const items = await buildOrderItems(cart.items);
-  const totals = buildTotals(items);
+  // Gom nhóm các mặt hàng trong giỏ theo nhà cung cấp (Shop)
+  const itemsByShop = {};
+  for (const item of cart.items) {
+    const product = item.product;
+    if (!product) {
+      const error = new Error('Không tìm thấy sản phẩm trong giỏ');
+      error.statusCode = 404;
+      throw error;
+    }
+    if (!product.shop) {
+      const error = new Error(`Sản phẩm ${product.name} chưa được liên kết với nhà cung cấp nào`);
+      error.statusCode = 400;
+      throw error;
+    }
+    const shopId = product.shop._id.toString();
+    if (!itemsByShop[shopId]) {
+      itemsByShop[shopId] = [];
+    }
+    itemsByShop[shopId].push(item);
+  }
 
-  const order = await Order.create({
-    order_code: generateOrderCode(),
-    customer: userId,
-    status: 'pending',
-    total_base: totals.total_base,
-    shipping_fee: totals.shipping_fee,
-    discount_total: totals.discount_total,
-    total_final: totals.total_final,
-    payment_status: 'pending',
-    payment_method: 'cod',
-    shipping_address: {
-      full_name: fullName,
-      phone,
-      address,
-      note
-    },
-    items,
-    history: [{ status: 'pending', note: 'Đặt hàng thành công (COD)' }]
-  });
+  const createdOrders = [];
+  const shopIds = Object.keys(itemsByShop);
 
+  // Tạo đơn hàng riêng biệt cho từng Shop
+  for (const shopId of shopIds) {
+    const shopItems = itemsByShop[shopId];
+    const orderItems = [];
+
+    for (const item of shopItems) {
+      const product = item.product;
+      const unitPrice = product.base_price + getVariantPrice(product, item.variant_id);
+      orderItems.push({
+        product: product._id,
+        variant_id: item.variant_id,
+        quantity: item.quantity,
+        price_at_buy: unitPrice
+      });
+    }
+
+    const totalBase = orderItems.reduce((sum, oItem) => sum + oItem.price_at_buy * oItem.quantity, 0);
+    const shippingFee = 15000; // Phí vận chuyển 15,000đ cho mỗi nhà cung cấp
+    const discountTotal = 0;
+    const totalFinal = totalBase + shippingFee;
+
+    const order = await Order.create({
+      order_code: generateOrderCode(),
+      customer: userId,
+      shop: shopId,
+      status: 'pending',
+      total_base: totalBase,
+      shipping_fee: shippingFee,
+      discount_total: discountTotal,
+      total_final: totalFinal,
+      payment_status: 'pending',
+      payment_method: 'cod',
+      shipping_address: {
+        full_name: fullName,
+        phone,
+        address,
+        note
+      },
+      items: orderItems,
+      history: [{ status: 'pending', note: 'Đặt hàng thành công (COD)' }]
+    });
+
+    createdOrders.push(order);
+  }
+
+  // Làm trống giỏ hàng
   cart.items = [];
   await cart.save();
 
-  return order;
+  // Trả về danh sách đơn hàng được tạo
+  return createdOrders;
 };
 
 const getOrdersByUser = async (userId) => {
   const orders = await Order.find({ customer: userId })
     .sort({ createdAt: -1 })
-    .populate('items.product');
+    .populate('shop')
+    .populate({ path: 'items.product', populate: { path: 'shop' } });
 
   for (const order of orders) {
     await applyAutoConfirm(order);
@@ -133,7 +183,8 @@ const getOrdersByUser = async (userId) => {
 
 const getOrderById = async (userId, orderId) => {
   let order = await Order.findOne({ _id: orderId, customer: userId })
-    .populate('items.product');
+    .populate('shop')
+    .populate({ path: 'items.product', populate: { path: 'shop' } });
 
   if (!order) {
     const error = new Error('Không tìm thấy đơn hàng');
@@ -189,7 +240,11 @@ const cancelOrder = async (userId, orderId, reason) => {
 };
 
 const mapOrderResponse = (order) => {
-  const orderObj = order.toObject();
+  if (!order) return null;
+  if (Array.isArray(order)) {
+    return order.map(mapOrderResponse);
+  }
+  const orderObj = typeof order.toObject === 'function' ? order.toObject() : order;
   return {
     ...orderObj,
     status_label: STATUS_LABELS[orderObj.status] || orderObj.status

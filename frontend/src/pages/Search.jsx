@@ -132,10 +132,21 @@ const Search = () => {
                   placeholder="Tìm kiếm sản phẩm..."
                   value={searchInput}
                   onChange={e => setSearchInput(e.target.value)}
-                  style={{ padding: '10px 16px 10px 40px', borderRadius: 'var(--radius-sm) 0 0 var(--radius-sm)' }}
+                  style={{ height: '44px', padding: '10px 16px 10px 40px', borderRadius: 'var(--radius-sm) 0 0 var(--radius-sm)' }}
                 />
               </div>
-              <button type="submit" className="btn-purple m-0" style={{ borderRadius: '0 var(--radius-sm) var(--radius-sm) 0', padding: '10px 24px' }}>
+              <button 
+                type="submit" 
+                className="btn-purple m-0" 
+                style={{ 
+                  height: '44px', 
+                  borderRadius: '0 var(--radius-sm) var(--radius-sm) 0', 
+                  padding: '0 24px', 
+                  whiteSpace: 'nowrap', 
+                  flexShrink: 0,
+                  justifyContent: 'center'
+                }}
+              >
                 Tìm kiếm
               </button>
             </form>
@@ -289,13 +300,6 @@ const Search = () => {
                               alt={product.name}
                               loading="lazy"
                             />
-                            {product.category && (
-                              <div className="position-absolute top-0 start-0 m-2 z-2">
-                                <span className="px-2 py-1 fw-bold shadow-sm" style={{ fontSize: '9px', letterSpacing: '0.5px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '4px' }}>
-                                  {product.category.name}
-                                </span>
-                              </div>
-                            )}
                           </div>
                           <div className="p-3 d-flex flex-column flex-grow-1 bg-transparent">
                             <p className="fw-medium mb-1 text-primary-hover flex-grow-1" style={{ fontSize: '13px', lineHeight: '1.4', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
